@@ -52,12 +52,22 @@ public class SensorDataLoggerCallback2 implements MqttCallback{
 				+"\"location\": \"Salotto\","
 				+"\"temperature\": \"17.30\""
 				+ "}";
+				
+				{"Type": "TEMP",
+				"Group": "Babbo",
+				"Location": "Salotto",
+				"Temperature": "17.39"}
+				
+				{"Type": "TEMP", "Group": "Babbo", "Location": "Salotto", "Temperature": "17.39"}
+
          */
 
         try {
 			iTempReading = iMapper.readValue(aMessage.toString(), TemperatureReading.class);
 		} catch (Exception e) {
 			logger.error("Error parsing message. Topic: [{}]. Message: [{}]", aTopic, aMessage.toString());
+			e.printStackTrace();
+			return;
 		}
 
         Date dateRead = Helper.resetSecMillsDate(new Date());
