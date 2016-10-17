@@ -20,6 +20,7 @@ public class MySweetHomeApplication {
     TemperatureReader iTemperatureReader = null;
     Thermostat iThermostat = null;
     Garden iGarden = null;
+    SensorDataLogger2 iSensorDataLogger = null;
     
     public MySweetHomeApplication() {
         super();
@@ -35,6 +36,9 @@ public class MySweetHomeApplication {
         SwitchOFF iSwitchOFF = new SwitchOFF(ThermostatProperties.SHUTDOWN_BUTTON);
         logger.info("Main Application: SwitchOFF pin opened and initialized");
         iThermostat = new Thermostat();
+        
+        iSensorDataLogger = new SensorDataLogger2();
+        iSensorDataLogger.start();
 
         if (ThermostatProperties.START_READING_TEMPERATURES){
             iTemperatureReader = new TemperatureReader(ThermostatProperties.THERMOMETER_LOCATION, ThermostatProperties.THERMOMETER_GROUP);
@@ -59,7 +63,9 @@ public class MySweetHomeApplication {
         }
         waitABit(3000);
         logger.info("Main Application: Turning off Thermostat");
+        iSensorDataLogger.stop();
         iThermostat.stop();
+        iSensorDataLogger = null;
         if (iTemperatureReader != null){
             iTemperatureReader.stop();
         }
