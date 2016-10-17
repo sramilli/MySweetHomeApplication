@@ -53,12 +53,14 @@ public class SensorDataLoggerCallback2 implements MqttCallback{
 				+"\"temperature\": \"17.30\""
 				+ "}";
 				
-				{"Type": "TEMP",
-				"Group": "Babbo",
-				"Location": "Salotto",
-				"Temperature": "17.39"}
+				{"type": "TEMP",
+				"group": "Babbo",
+				"location": "Salotto",
+				"temperature": "17.39"}
 				
-				{"Type": "TEMP", "Group": "Babbo", "Location": "Salotto", "Temperature": "17.39"}
+				{"type": "TEMP", "group": "Babbo", "location": "Salotto", "temperature": "17.39"}
+				{"type": "TEMP", "group": "Ste", "location": "Salotttto", "temperature": "17.39"}
+				"{\"type\": \"TEMP\", \"group\": \"Ste\", \"location\": \"Salotttto\", \"temperature\": \"21.39\"}"
 
          */
 
