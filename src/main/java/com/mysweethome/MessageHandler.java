@@ -15,7 +15,7 @@ import com.mysweethome.entity.Message;
 import com.mysweethome.entity.SMS;
 import com.mysweethome.entity.User;
 import com.mysweethome.entity.Users;
-import com.mysweethome.properties.ThermostatProperties;
+import com.mysweethome.properties.MySweetHomeProperties;
 
 /**
  *
@@ -45,7 +45,7 @@ public class MessageHandler {
             logger.warn("sendMessage doing nothing. user invalid:  [{}] ", tUser);
             return;
         }
-        if (ThermostatProperties.PREFER_EMAIL_REPLIES_IF_AVAILABLE && tUser.hasValidEmail() && ThermostatProperties.A != null && ThermostatProperties.B != null){
+        if (MySweetHomeProperties.PREFER_EMAIL_REPLIES_IF_AVAILABLE && tUser.hasValidEmail() && MySweetHomeProperties.A != null && MySweetHomeProperties.B != null){
             try {
                 sendEmailMessage(aMessage);
             } catch (RuntimeException e){

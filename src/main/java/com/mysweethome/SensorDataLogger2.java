@@ -16,7 +16,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mysweethome.properties.GardenProperties;
+import com.mysweethome.properties.MySweetHomeProperties;
 
 /**
  *
@@ -39,23 +39,23 @@ public class SensorDataLogger2 {
 
     public void start() {
         try{
-            iMqttClient = new MqttClient(GardenProperties.MQTT_BROKER, GardenProperties.SENSOR_LOGGER_CLIENT_ID + "2", iPersistence);
+            iMqttClient = new MqttClient(MySweetHomeProperties.MQTT_BROKER, MySweetHomeProperties.LOCAL_CLIENT, iPersistence);
             //set callback before connecting
             iMqttClient.setCallback(new SensorDataLoggerCallback2());
             iMqttClient.connect(iConnOpt);
         } catch (MqttException e) {
             e.printStackTrace();
             System.exit(-1);
-            logger.error("Error connecting to MQTT [{}]", GardenProperties.MQTT_BROKER);
+            logger.error("Error connecting to local MQTT [{}]", MySweetHomeProperties.MQTT_BROKER);
         }
-        logger.info("Connected to  [{}]", GardenProperties.MQTT_BROKER);
+        logger.info("Connected to  [{}]", MySweetHomeProperties.MQTT_BROKER);
         
         try{
-            iMqttClient.subscribe("/sensorReadings", GardenProperties.MQTT_QOS_2);
-            logger.info("Subscribed to  [{}]", "/sensorReadings");
+            iMqttClient.subscribe(MySweetHomeProperties.SENSOR_READINGS_TOPIC, MySweetHomeProperties.MQTT_QOS_2);
+            logger.info("Subscribed to  [{}]", MySweetHomeProperties.SENSOR_READINGS_TOPIC);
         } catch (Exception e){
             e.printStackTrace();
-            logger.error("Error subscribing to  [{}]", "/sensorReadings");
+            logger.error("Error subscribing to  [{}]", MySweetHomeProperties.SENSOR_READINGS_TOPIC);
         }
     }
     

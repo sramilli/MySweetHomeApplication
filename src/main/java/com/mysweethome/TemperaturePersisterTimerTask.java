@@ -13,7 +13,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mysweethome.entity.TemperatureMeasure;
 import com.mysweethome.helper.Helper;
-import com.mysweethome.properties.ThermostatProperties;
+import com.mysweethome.properties.MySweetHomeProperties;
 
 import java.util.List;
 //import java.util.logging.Level;
@@ -79,7 +79,7 @@ class TemperaturePersisterTimerTask extends TimerTask {
         }
 
         try{
-            MongoClientURI uri  = new MongoClientURI(ThermostatProperties.ML_URL); 
+            MongoClientURI uri  = new MongoClientURI(MySweetHomeProperties.ML_URL); 
             client = new MongoClient(uri);
             MongoDatabase database = (MongoDatabase) client.getDatabase(uri.getDatabase());
             mongoCollection = database.getCollection("dailytemps");

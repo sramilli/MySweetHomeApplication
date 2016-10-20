@@ -9,7 +9,7 @@ package com.mysweethome.properties;
  *
  * @author Ste
  */
-public class ThermostatProperties {
+public class MySweetHomeProperties {
 
     //private static int GREEN_LED_HEATER_STATUS = 18;
     //private static int HEATER_RELAY = 7;
@@ -33,8 +33,8 @@ public class ThermostatProperties {
     public static int MANUAL_THERMOSTAT_INPUT = 3;  //22_PI4J_B_REV_2
 
     public static boolean START_READING_TEMPERATURES = true;
-    public static boolean STORE_TEMPERATURES = false;
-    public static boolean PERSIST_TEMPERATURES = false;
+    //public static boolean STORE_TEMPERATURES = false; not used??
+    public static boolean PERSIST_TEMPERATURES = true;
     public static String THERMOMETER_LOCATION = "";
     public static String THERMOMETER_GROUP = "Unknown";
     public static boolean SOFT_SHUTDOWN_ENABLED = false;
@@ -50,6 +50,12 @@ public class ThermostatProperties {
     
     //TODO new to add to Babbo
     public static boolean BMP280_TEMP_SENSOR_PRESENT_AT_76 = false;
+    
+    //TODO new to add to Babbo and to me
+    public static String MQTT_BROKER = "tcp://192.168.0.25:1883";
+    public static String LOCAL_CLIENT = "LocalClient";
+    public static String SENSOR_READINGS_TOPIC = "/sensorreadings";
+    public static int MQTT_QOS_2 = 2;
     
     static {
         try{
@@ -69,7 +75,7 @@ public class ThermostatProperties {
             MANUAL_THERMOSTAT_INPUT = new Integer(prop.getProperty("MANUAL_THERMOSTAT_INPUT"));
             BLUE_PROGRAM_LED = new Integer(prop.getProperty("BLUE_PROGRAM_LED"));
             PREFER_EMAIL_REPLIES_IF_AVAILABLE = new Boolean(prop.getProperty("PREFER_EMAIL_REPLIES_IF_AVAILABLE"));
-            STORE_TEMPERATURES = new Boolean(prop.getProperty("STORE_TEMPERATURES"));
+            //STORE_TEMPERATURES = new Boolean(prop.getProperty("STORE_TEMPERATURES")); not used??
             PERSIST_TEMPERATURES = new Boolean(prop.getProperty("PERSIST_TEMPERATURES"));
             A = prop.getProperty("A");  //not backwords compatible safe
             B = prop.getProperty("B");  //not backwords compatible safe

@@ -15,8 +15,9 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysweethome.entity.TemperatureMeasure;
 import com.mysweethome.helper.Helper;
+import com.mysweethome.helper.JsonHelper;
 import com.mysweethome.model.TemperatureReading;
-import com.mysweethome.properties.GardenProperties;
+import com.mysweethome.properties.MySweetHomeProperties;
 
 /**
  *
@@ -63,21 +64,28 @@ public class SensorDataLoggerCallback2 implements MqttCallback{
 				"{\"type\": \"TEMP\", \"group\": \"Ste\", \"location\": \"Salotttto\", \"temperature\": \"21.39\"}"
 
          */
+        // TODO emprove with emum
 
-        try {
-			iTempReading = iMapper.readValue(aMessage.toString(), TemperatureReading.class);
-		} catch (Exception e) {
-			logger.error("Error parsing message. Topic: [{}]. Message: [{}]", aTopic, aMessage.toString());
-			e.printStackTrace();
-			return;
-		}
+            try {
+                if ("TEMP".equals(JsonHelper.readField(aMessage.toString(), "type"))){
+	                logger.info("TEMP reading received. Topic: [{}]. Message: [{}]", aTopic, aMessage.toString());
+	                if (MySweetHomeProperties.PERSIST_TEMPERATURES){
+		    			iTempReading = iMapper.readValue(aMessage.toString(), TemperatureReading.class);
+		    	        Date dateRead = Helper.resetSecMillsDate(new Date());
+	    	            storeTemperature(new TemperatureMeasure(iTempReading.getLocation(), iTempReading.getGroup(), dateRead, iTempReading.getTemperature()));
+	    	        }
+                } else if (false){
+                	//next type
+                } else {
+                	logger.warn("Measure not recognized. Topic: [{}]. Message: [{}]", aTopic, aMessage.toString());
+                }
+    		} catch (Exception e) {
+    			logger.error("Error parsing message. Topic: [{}]. Message: [{}]", aTopic, aMessage.toString());
+    			e.printStackTrace();
+    			return;
+    		}
 
-        Date dateRead = Helper.resetSecMillsDate(new Date());
-        //TODO witch temperature to store?
-        //iTemperatureStore.setLastTemperatureRead(new TemperatureMeasure(messageSplitted[2], messageSplitted[1], dateRead, new Float(messageSplitted[3])));
-        if (GardenProperties.PERSIST_TEMPERATURES){
-            storeTemperature(new TemperatureMeasure(iTempReading.getLocation(), iTempReading.getGroup(), dateRead, iTempReading.getTemperature()));
-        }
+
     }
 
     @Override

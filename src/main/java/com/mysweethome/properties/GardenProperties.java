@@ -15,9 +15,11 @@ public class GardenProperties {
     
     public static String ACTUATOR_CLIENT_ID = "ActuatorMqttClient";
     public static String SENSOR_LOGGER_CLIENT_ID = "SensorLoggerMqttClient";
+    // TODO MQTT_BROKER to delete. moved to main application
     public static String MQTT_BROKER = "tcp://192.168.0.25:1883";
     public static int MQTT_QOS_2 = 2;
     public static String SENSOR_DATA_LOGGER_TOPIC_TEMPS = "/temps";
+    //stop to delete
     
     public static String MORNING_WATERING_TIME = "23:30";
     public static String EVENING_WATERING_TIME = "23:33";
@@ -42,8 +44,6 @@ public class GardenProperties {
     public static boolean PUMP_3_PLUGGED = true;
     public static boolean PUMP_4_PLUGGED = true;
     public static boolean PUMP_5_PLUGGED = true;
-    
-    public static boolean PERSIST_TEMPERATURES = true;
     
     static {
         try{
@@ -80,9 +80,7 @@ public class GardenProperties {
             PUMP_3_PLUGGED = new Boolean(prop.getProperty("PUMP_3_PLUGGED"));
             PUMP_4_PLUGGED = new Boolean(prop.getProperty("PUMP_4_PLUGGED"));
             PUMP_5_PLUGGED = new Boolean(prop.getProperty("PUMP_5_PLUGGED"));
-    
-            PERSIST_TEMPERATURES = new Boolean(prop.getProperty("PERSIST_TEMPERATURES"));
-            
+        
             System.out.println("Read Garden Prop measureTemps correctly");
         } catch (Throwable ex){
             System.out.println("ERROR READING GARDEN PROP FILE!!!");

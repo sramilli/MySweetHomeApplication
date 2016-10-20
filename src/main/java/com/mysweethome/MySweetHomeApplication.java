@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mysweethome.devices.SwitchOFF;
 import com.mysweethome.properties.GardenProperties;
-import com.mysweethome.properties.ThermostatProperties;
+import com.mysweethome.properties.MySweetHomeProperties;
 
 /**
  *
@@ -33,15 +33,15 @@ public class MySweetHomeApplication {
 
     public void startApp() {
         logger.info("Starting Thermostatapplication at: [{}]", new Date());
-        SwitchOFF iSwitchOFF = new SwitchOFF(ThermostatProperties.SHUTDOWN_BUTTON);
+        SwitchOFF iSwitchOFF = new SwitchOFF(MySweetHomeProperties.SHUTDOWN_BUTTON);
         logger.info("Main Application: SwitchOFF pin opened and initialized");
         iThermostat = new Thermostat();
         
         iSensorDataLogger = new SensorDataLogger2();
         iSensorDataLogger.start();
 
-        if (ThermostatProperties.START_READING_TEMPERATURES){
-            iTemperatureReader = new TemperatureReader(ThermostatProperties.THERMOMETER_LOCATION, ThermostatProperties.THERMOMETER_GROUP);
+        if (MySweetHomeProperties.START_READING_TEMPERATURES){
+            iTemperatureReader = new TemperatureReader(MySweetHomeProperties.THERMOMETER_LOCATION, MySweetHomeProperties.THERMOMETER_GROUP);
             iTemperatureReader.startReadingTemperatures();
         }
         
@@ -77,7 +77,7 @@ public class MySweetHomeApplication {
         iThermostat = null;
         iTemperatureReader = null;
         
-        if (iSwitchOFF.justTerminateApp() && ThermostatProperties.SOFT_SHUTDOWN_ENABLED){
+        if (iSwitchOFF.justTerminateApp() && MySweetHomeProperties.SOFT_SHUTDOWN_ENABLED){
             logger.info("Just exit the java application");
             logger.info("Main Application: Turning off SwitchOff button");
             iSwitchOFF.close();

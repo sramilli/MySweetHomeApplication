@@ -13,7 +13,7 @@ import com.mysweethome.entity.SMS;
 import com.mysweethome.entity.User;
 import com.mysweethome.entity.Users;
 import com.mysweethome.helper.Helper;
-import com.mysweethome.properties.ThermostatProperties;
+import com.mysweethome.properties.MySweetHomeProperties;
 import com.mysweethome.states.State;
 import com.mysweethome.states.ThermostatState;
 import com.mysweethome.states.ThermostatStateFactory;
@@ -82,15 +82,15 @@ public class Thermostat implements GpioPinListenerDigital {
 
     public Thermostat() {
         try {
-            iHeaterStatusLed = new Led(ThermostatProperties.GREEN_HEATER_STATUS_LED);
-            iGreenLED = new Led(ThermostatProperties.GREEN_STATE_LED);
-            iYellowLED = new Led(ThermostatProperties.YELLOW_STATE_LED);
-            iRedLED = new Led(ThermostatProperties.RED_STATE_LED);
-            iBlueLED = new Led(ThermostatProperties.BLUE_PROGRAM_LED);
-            iHeaterRelay = new Relay(ThermostatProperties.HEATER_RELAY);
-            iModeButton = new Button(ThermostatProperties.MODE_BUTTON);
+            iHeaterStatusLed = new Led(MySweetHomeProperties.GREEN_HEATER_STATUS_LED);
+            iGreenLED = new Led(MySweetHomeProperties.GREEN_STATE_LED);
+            iYellowLED = new Led(MySweetHomeProperties.YELLOW_STATE_LED);
+            iRedLED = new Led(MySweetHomeProperties.RED_STATE_LED);
+            iBlueLED = new Led(MySweetHomeProperties.BLUE_PROGRAM_LED);
+            iHeaterRelay = new Relay(MySweetHomeProperties.HEATER_RELAY);
+            iModeButton = new Button(MySweetHomeProperties.MODE_BUTTON);
             iModeButton.setInputListener(this);
-            iManualTherostat = new Button(ThermostatProperties.MANUAL_THERMOSTAT_INPUT);
+            iManualTherostat = new Button(MySweetHomeProperties.MANUAL_THERMOSTAT_INPUT);
             iManualTherostat.setInputListener(this);
             
             iMessageHandler = new MessageHandler(this);

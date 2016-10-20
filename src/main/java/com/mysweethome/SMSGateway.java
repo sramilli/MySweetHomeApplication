@@ -6,7 +6,7 @@
 package com.mysweethome;
 
 import com.mysweethome.entity.SMS;
-import com.mysweethome.properties.ThermostatProperties;
+import com.mysweethome.properties.MySweetHomeProperties;
 import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialDataEvent;
 import com.pi4j.io.serial.SerialDataListener;
@@ -52,10 +52,10 @@ public class SMSGateway implements SerialDataListener{
     public void initialize() {
 
         iSerialDataListener = this;
-        logger.info("... connect to serial MODEM using settings: [{}], N, 8, 1.", ThermostatProperties.GSM_BAUD_RATE);
+        logger.info("... connect to serial MODEM using settings: [{}], N, 8, 1.", MySweetHomeProperties.GSM_BAUD_RATE);
         // create an instance of the serial communications class
         serial = SerialFactory.createInstance();
-        serial.open(Serial.DEFAULT_COM_PORT, ThermostatProperties.GSM_BAUD_RATE);
+        serial.open(Serial.DEFAULT_COM_PORT, MySweetHomeProperties.GSM_BAUD_RATE);
         waitABit(3000);
         
         sendATCommand();

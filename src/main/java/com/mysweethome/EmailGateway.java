@@ -16,7 +16,7 @@ import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mysweethome.properties.ThermostatProperties;
+import com.mysweethome.properties.MySweetHomeProperties;
 
 /**
  *
@@ -56,7 +56,7 @@ class EmailGateway {
             aBody = aBody.replaceAll("\n", "<br>");
             msg.setContent(aBody, "text/html");
             Transport transport = session.getTransport("smtp");
-            transport.connect("smtp.gmail.com", ThermostatProperties.A, ThermostatProperties.B);
+            transport.connect("smtp.gmail.com", MySweetHomeProperties.A, MySweetHomeProperties.B);
             transport.sendMessage(msg, msg.getAllRecipients());
             transport.close();
 

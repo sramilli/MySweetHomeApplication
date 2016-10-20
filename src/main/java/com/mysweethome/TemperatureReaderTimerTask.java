@@ -19,7 +19,7 @@ import com.mysweethome.devices.AdafruitBMP180;
 import com.mysweethome.devices.BMP280;
 import com.mysweethome.entity.TemperatureMeasure;
 import com.mysweethome.helper.Helper;
-import com.mysweethome.properties.ThermostatProperties;
+import com.mysweethome.properties.MySweetHomeProperties;
 
 /**
  *
@@ -42,7 +42,7 @@ public class TemperatureReaderTimerTask extends TimerTask {
     public TemperatureReaderTimerTask(String aLocation, String aGroup, TemperatureStore aTemperatureStore){
         logger.info("TemperatureReaderTimerTask INSTANTIATED");
         tempSensor = new AdafruitBMP180();
-        if (ThermostatProperties.BMP280_TEMP_SENSOR_PRESENT_AT_76){
+        if (MySweetHomeProperties.BMP280_TEMP_SENSOR_PRESENT_AT_76){
             try {
                 bmp280 = new BMP280(BMP280.Protocol.I2C, BMP280.ADDR_SDO_2_GND, BUS_1);
                 bmp280.setIndoorNavigationMode();
@@ -67,7 +67,7 @@ public class TemperatureReaderTimerTask extends TimerTask {
     public void run(){
         try {
             temp = tempSensor.readTemperature();
-            if (ThermostatProperties.BMP280_TEMP_SENSOR_PRESENT_AT_76){
+            if (MySweetHomeProperties.BMP280_TEMP_SENSOR_PRESENT_AT_76){
                 double[] results = bmp280.sampleDeviceReads();
                 temp_2 = (float) results[BMP280.TEMP_VAL_C];
             }
@@ -79,14 +79,14 @@ public class TemperatureReaderTimerTask extends TimerTask {
         }
         dateRead = Helper.resetSecMillsDate(new Date());
         logger.info("Temp measure: [{}], [{}] C", Helper.getDateAsString(dateRead), Helper.getTempAsString(temp));
-        if (ThermostatProperties.BMP280_TEMP_SENSOR_PRESENT_AT_76){
+        if (MySweetHomeProperties.BMP280_TEMP_SENSOR_PRESENT_AT_76){
             logger.info("Temp measure_2: [{}], [{}] C", Helper.getDateAsString(dateRead), Helper.getTempAsString(temp_2));
         }
         iTemperatureStore.setLastTemperatureRead(new TemperatureMeasure(iLocation, iGroup, dateRead, temp));
         //iTemperatureStore.setLastTemperatureRead(new TemperatureMeasure("280", iGroup, dateRead, temp_2));
-        if (ThermostatProperties.PERSIST_TEMPERATURES){
+        if (MySweetHomeProperties.PERSIST_TEMPERATURES){
             storeTemperature(new TemperatureMeasure(iLocation, iGroup, dateRead, temp));
-            if (ThermostatProperties.BMP280_TEMP_SENSOR_PRESENT_AT_76){
+            if (MySweetHomeProperties.BMP280_TEMP_SENSOR_PRESENT_AT_76){
                 storeTemperature(new TemperatureMeasure("280", iGroup, dateRead, temp_2));
             }
         }

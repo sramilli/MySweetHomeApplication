@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mysweethome.entity.TemperatureMeasure;
 import com.mysweethome.helper.Helper;
-import com.mysweethome.properties.GardenProperties;
+import com.mysweethome.properties.MySweetHomeProperties;
 
 /**
  *
@@ -46,7 +46,7 @@ public class SensorDataLoggerCallback implements MqttCallback{
         Date dateRead = Helper.resetSecMillsDate(new Date());
         //TODO witch temperature to store?
         //iTemperatureStore.setLastTemperatureRead(new TemperatureMeasure(messageSplitted[2], messageSplitted[1], dateRead, new Float(messageSplitted[3])));
-        if ("TEMP".equals(messageSplitted[0]) && GardenProperties.PERSIST_TEMPERATURES){
+        if ("TEMP".equals(messageSplitted[0]) && MySweetHomeProperties.PERSIST_TEMPERATURES){
             storeTemperature(new TemperatureMeasure(messageSplitted[2], messageSplitted[1], dateRead, new Float(messageSplitted[3])));
         }
         

@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mysweethome.helper.Helper;
-import com.mysweethome.properties.ThermostatProperties;
+import com.mysweethome.properties.MySweetHomeProperties;
 
 
 /**
@@ -52,7 +52,7 @@ public class TemperatureReader {
         
         timerRead.scheduleAtFixedRate(new TemperatureReaderTimerTask(iLocation, iGroup, tTemperatureStore), startMeasureDate, EVERY_1_MINUTE);
                 
-        if (ThermostatProperties.PERSIST_TEMPERATURES){
+        if (MySweetHomeProperties.PERSIST_TEMPERATURES){
             timerPersister = new Timer();                                                                            
             timerPersister.scheduleAtFixedRate(new TemperaturePersisterTimerTask(tTemperatureStore), Helper.getNextWholeMinuteDate(new Date()), EVERY_5_MINUTES);
         }
