@@ -13,10 +13,7 @@ import com.mysweethome.helper.Helper;
  *
  * @author Ste
  */
-public class TemperatureMeasure {
-    String iLocation;
-    String iGroup;
-    Date iDate;
+public class TemperatureMeasure extends Measure {
     float iTemp;
 
     public TemperatureMeasure(String aLocation, String aGroup, Date aDate, float aTemp) {
@@ -32,30 +29,6 @@ public class TemperatureMeasure {
                 +", Date: "+Helper.getDateAsString(getDate())
                 +", Temp: "+Helper.getTempAsString(getTemp())
                 +"]";
-    }
-
-    public String getLocation() {
-        return iLocation;
-    }
-
-    public void setLocation(String aLocation) {
-        this.iLocation = aLocation;
-    }
-    
-    public String getGroup() {
-        return iGroup;
-    }
-
-    public void setGroup(String aGroup) {
-        this.iGroup = aGroup;
-    }
-
-    public Date getDate() {
-        return iDate;
-    }
-
-    public void setDate(Date aDate) {
-        this.iDate = aDate;
     }
 
     public float getTemp() {

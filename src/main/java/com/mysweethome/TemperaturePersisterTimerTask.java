@@ -38,8 +38,8 @@ class TemperaturePersisterTimerTask extends TimerTask {
     
     TemperatureStore iTemperatureStore;
 
-    public TemperaturePersisterTimerTask(TemperatureStore aTemperatureStore) {
-        iTemperatureStore = aTemperatureStore;
+    public TemperaturePersisterTimerTask() {
+        iTemperatureStore = TemperatureStore.getInstance();
         //need to use a new list to freeze it
         iPersistedTemperatures = new ArrayList<TemperatureMeasure>();
         logger.info("TemperaturePersisterTimerTask instantiated");

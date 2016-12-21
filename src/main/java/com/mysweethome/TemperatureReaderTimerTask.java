@@ -39,7 +39,7 @@ public class TemperatureReaderTimerTask extends TimerTask {
     TemperatureStore iTemperatureStore;
     private static int BUS_1 = 1;
 
-    public TemperatureReaderTimerTask(String aLocation, String aGroup, TemperatureStore aTemperatureStore){
+    public TemperatureReaderTimerTask(String aLocation, String aGroup){
         logger.info("TemperatureReaderTimerTask INSTANTIATED");
         tempSensor = new AdafruitBMP180();
         if (MySweetHomeProperties.BMP280_TEMP_SENSOR_PRESENT_AT_76){
@@ -60,7 +60,7 @@ public class TemperatureReaderTimerTask extends TimerTask {
         temp_2 = 0;
         iLocation = aLocation;
         iGroup = aGroup;
-        iTemperatureStore = aTemperatureStore;
+        iTemperatureStore = TemperatureStore.getInstance();
     }
 
     @Override

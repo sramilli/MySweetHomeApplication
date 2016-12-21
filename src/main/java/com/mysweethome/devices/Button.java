@@ -7,6 +7,7 @@
 package com.mysweethome.devices;
 
 import com.mysweethome.helper.Pi4jHelper;
+import com.mysweethome.properties.MySweetHomeProperties;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
@@ -29,7 +30,11 @@ public class Button{
     
     public Button(int aPin){
 
-        iPin = gpio.provisionDigitalInputPin(Pi4jHelper.getPin(aPin));
+    	if (MySweetHomeProperties.USE_INTERNAL_GPIO_PULL_UPP_FOR_BUTTON){
+    		iPin = gpio.provisionDigitalInputPin(Pi4jHelper.getPin(aPin), PinPullResistance.PULL_UP);
+    	} else {
+            iPin = gpio.provisionDigitalInputPin(Pi4jHelper.getPin(aPin));
+    	}
         GpioUtil.setEdgeDetection(aPin, GpioUtil.EDGE_RISING);
         iPin.setDebounce(300);
     }

@@ -40,6 +40,15 @@ public class Helper {
         return cal.getTime();
     }
     
+    public static Date getNextWholeMinutePlusFiveDate(Date aDate){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(aDate);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.add(Calendar.MINUTE, 6);
+        return cal.getTime();
+    }
+    
     public static Date getNextWholeMinuteDatePlusFiveSec(Date aDate){
         Calendar cal = Calendar.getInstance();
         cal.setTime(aDate);

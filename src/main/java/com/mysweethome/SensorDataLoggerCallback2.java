@@ -73,6 +73,13 @@ public class SensorDataLoggerCallback2 implements MqttCallback{
 		    			iTempReading = iMapper.readValue(aMessage.toString(), TemperatureReading.class);
 		    	        Date dateRead = Helper.resetSecMillsDate(new Date());
 	    	            storeTemperature(new TemperatureMeasure(iTempReading.getLocation(), iTempReading.getGroup(), dateRead, iTempReading.getTemperature()));
+	    	            
+	    	            //are there some device info?
+	    				if (JsonHelper.nodePresent(aMessage.toString(), "esp8266Status")){
+	    					System.out.println("Temperature.esp8266Status.age:: "+iTempReading.getESP8266Status().getAge());
+	    				} else {
+	    					System.out.println("No ESP8266Status present");
+	    				}
 	    	        }
                 } else if (false){
                 	//next type

@@ -33,7 +33,6 @@ public class TemperatureReader {
     Timer timerPersister = null;
     String iLocation;
     String iGroup;
-    TemperatureStore tTemperatureStore;
     
     public static long EVERY_1_MINUTE = 1 * 60 * 1000;
     //TODO just for testing. do every 5 minutes
@@ -43,18 +42,17 @@ public class TemperatureReader {
         timerRead = new Timer();
         iLocation = aLocation;
         iGroup = aGroup;
-        tTemperatureStore = TemperatureStore.getInstance();
     }
     
     public void startReadingTemperatures(){
         Date startMeasureDate = Helper.getNextWholeMinuteDatePlusFiveSec(new Date());
         logger.info("Start reading temperature at: [{}] ", Helper.getDateAsString(startMeasureDate));
         
-        timerRead.scheduleAtFixedRate(new TemperatureReaderTimerTask(iLocation, iGroup, tTemperatureStore), startMeasureDate, EVERY_1_MINUTE);
+        timerRead.scheduleAtFixedRate(new TemperatureReaderTimerTask(iLocation, iGroup), startMeasureDate, EVERY_1_MINUTE);
                 
         if (MySweetHomeProperties.PERSIST_TEMPERATURES){
             timerPersister = new Timer();                                                                            
-            timerPersister.scheduleAtFixedRate(new TemperaturePersisterTimerTask(tTemperatureStore), Helper.getNextWholeMinuteDate(new Date()), EVERY_5_MINUTES);
+            timerPersister.scheduleAtFixedRate(new TemperaturePersisterTimerTask(), Helper.getNextWholeMinutePlusFiveDate(new Date()), EVERY_5_MINUTES);
         }
     }
     
@@ -65,10 +63,6 @@ public class TemperatureReader {
         if (timerPersister != null){
             timerPersister.cancel();
         }
-        if (tTemperatureStore != null){
-            tTemperatureStore.cancel();
-        }
-        
     }
 
 }

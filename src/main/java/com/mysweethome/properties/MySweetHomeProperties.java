@@ -56,6 +56,7 @@ public class MySweetHomeProperties {
     public static String LOCAL_CLIENT = "LocalClient";
     public static String SENSOR_READINGS_TOPIC = "/sensorreadings";
     public static int MQTT_QOS_2 = 2;
+    public static boolean USE_INTERNAL_GPIO_PULL_UPP_FOR_BUTTON = false;
     
     static {
         try{
@@ -77,6 +78,10 @@ public class MySweetHomeProperties {
             PREFER_EMAIL_REPLIES_IF_AVAILABLE = new Boolean(prop.getProperty("PREFER_EMAIL_REPLIES_IF_AVAILABLE"));
             //STORE_TEMPERATURES = new Boolean(prop.getProperty("STORE_TEMPERATURES")); not used??
             PERSIST_TEMPERATURES = new Boolean(prop.getProperty("PERSIST_TEMPERATURES"));
+            MQTT_BROKER = prop.getProperty("MQTT_BROKER");
+            LOCAL_CLIENT = prop.getProperty("LOCAL_CLIENT");
+            SENSOR_READINGS_TOPIC = prop.getProperty("SENSOR_READINGS_TOPIC");
+            MQTT_QOS_2 = new Integer(prop.getProperty("MQTT_QOS_2"));
             A = prop.getProperty("A");  //not backwords compatible safe
             B = prop.getProperty("B");  //not backwords compatible safe
             C = prop.getProperty("C");  //not backwords compatible safe
@@ -85,6 +90,7 @@ public class MySweetHomeProperties {
             USER_2 = prop.getProperty("USER_2");
             USER_3 = prop.getProperty("USER_3");
             BMP280_TEMP_SENSOR_PRESENT_AT_76 = new Boolean(prop.getProperty("BMP280_TEMP_SENSOR_PRESENT_AT_76"));
+            USE_INTERNAL_GPIO_PULL_UPP_FOR_BUTTON = new Boolean(prop.getProperty("USE_INTERNAL_GPIO_PULL_UPP_FOR_BUTTON"));
             System.out.println("Read Prop measureTemps correctly");
         } catch (Throwable ex){
             System.out.println("ERROR READING PROP FILE!!!");
