@@ -35,7 +35,7 @@ public class Button{
     	} else {
             iPin = gpio.provisionDigitalInputPin(Pi4jHelper.getPin(aPin));
     	}
-        GpioUtil.setEdgeDetection(aPin, GpioUtil.EDGE_RISING);
+        GpioUtil.setEdgeDetection(aPin, GpioUtil.EDGE_FALLING);
         iPin.setDebounce(300);
     }
     
