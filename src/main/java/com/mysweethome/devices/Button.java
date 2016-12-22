@@ -31,11 +31,11 @@ public class Button{
     public Button(int aPin){
 
     	if (MySweetHomeProperties.USE_INTERNAL_GPIO_PULL_UPP_FOR_BUTTON){
-    		iPin = gpio.provisionDigitalInputPin(Pi4jHelper.getPin(aPin), PinPullResistance.PULL_UP);
+    		iPin = gpio.provisionDigitalInputPin(Pi4jHelper.getPin(aPin), PinPullResistance.PULL_DOWN);
     	} else {
             iPin = gpio.provisionDigitalInputPin(Pi4jHelper.getPin(aPin));
     	}
-        GpioUtil.setEdgeDetection(aPin, GpioUtil.EDGE_FALLING);
+        GpioUtil.setEdgeDetection(aPin, GpioUtil.EDGE_RISING);
         iPin.setDebounce(300);
     }
     
