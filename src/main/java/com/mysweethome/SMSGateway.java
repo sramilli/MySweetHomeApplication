@@ -56,7 +56,15 @@ public class SMSGateway implements SerialDataListener{
         // create an instance of the serial communications class
         try {
             serial = SerialFactory.createInstance();
-            serial.open(Serial.DEFAULT_COM_PORT, MySweetHomeProperties.GSM_BAUD_RATE);
+            
+            //TODO WTF!!!!!!
+            
+            //serial.open(Serial.DEFAULT_COM_PORT, MySweetHomeProperties.GSM_BAUD_RATE);
+            
+            serial.open("/dev/ttyS0", MySweetHomeProperties.GSM_BAUD_RATE);
+            
+            
+            
         } catch (Throwable e) {
         	logger.error("ERROR opening serial communication to the GPRS module", e);
         }
