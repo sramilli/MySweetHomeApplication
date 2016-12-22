@@ -54,12 +54,21 @@ public class SMSGateway implements SerialDataListener{
         iSerialDataListener = this;
         logger.info("... connect to serial MODEM using settings: [{}], N, 8, 1.", MySweetHomeProperties.GSM_BAUD_RATE);
         // create an instance of the serial communications class
-        serial = SerialFactory.createInstance();
-        serial.open(Serial.DEFAULT_COM_PORT, MySweetHomeProperties.GSM_BAUD_RATE);
+        try {
+            serial = SerialFactory.createInstance();
+            serial.open(Serial.DEFAULT_COM_PORT, MySweetHomeProperties.GSM_BAUD_RATE);
+        } catch (Throwable e) {
+        	logger.error("ERROR opening serial communication to the GPRS module", e);
+        }
+
         waitABit(3000);
         
         sendATCommand();
-        readAnswer(); 
+        String response = readAnswer(); 
+        if (response == null || response.equals("")) {
+        	logger.error("GPRS ERROR. It didnt respond to AT command");
+        	return;
+        }
         // create and register the serial data listener
         /*serial.addListener(new SerialDataListener() {
              @Override
@@ -191,10 +200,14 @@ public class SMSGateway implements SerialDataListener{
     //Simple read
     //
     public String readAnswer() {
+    	logger.debug("Reading answer from MODEM");
         waitABit(1000);
         StringBuffer tReply = new StringBuffer();
         while (serial.availableBytes() > 0) {
             tReply.append(serial.read());
+        } 
+        if (tReply.length() < 1) {
+        	logger.debug("No bytes available on the serial connection. Resulting string: [{}]", tReply.toString());
         }
         return tReply.toString();
     }
