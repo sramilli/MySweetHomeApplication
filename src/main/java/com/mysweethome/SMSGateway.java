@@ -63,6 +63,10 @@ public class SMSGateway implements SerialDataListener{
 
         waitABit(3000);
         
+        if (serial.isOpen()) logger.debug("Serial Port Open!");
+        if (serial.isClosed()) logger.debug("Serial Port Closed!");
+        if (serial.isShutdown()) logger.debug("Serial Port Closed!");
+        
         sendATCommand();
         String response = readAnswer(); 
         if (response == null || response.equals("")) {
@@ -143,7 +147,7 @@ public class SMSGateway implements SerialDataListener{
     //
     public void sendATCommand (){
         logger.info("---->Sending: AT");
-        serial.write("AT\r");
+        serial.write("AT\r\n");
         waitABit(1000); //TODO tweeka
     }
     
