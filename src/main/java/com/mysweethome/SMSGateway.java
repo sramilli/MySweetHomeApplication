@@ -81,6 +81,7 @@ public class SMSGateway implements SerialDataListener{
         	logger.error("GPRS ERROR. It didnt respond to AT command");
         	return;
         }
+
         // create and register the serial data listener
         /*serial.addListener(new SerialDataListener() {
              @Override
@@ -156,7 +157,7 @@ public class SMSGateway implements SerialDataListener{
     public void sendATCommand (){
         logger.info("---->Sending: AT");
         serial.write("AT\r\n");
-        waitABit(1000); //TODO tweeka
+        waitABit(2000); //TODO tweeka
     }
     
     public void sendReadAllMessagesCommand(){
@@ -220,6 +221,8 @@ public class SMSGateway implements SerialDataListener{
         } 
         if (tReply.length() < 1) {
         	logger.debug("No bytes available on the serial connection. Resulting string: [{}]", tReply.toString());
+        } else {
+            logger.debug("Response from modem: [{}]", tReply.toString());
         }
         return tReply.toString();
     }
