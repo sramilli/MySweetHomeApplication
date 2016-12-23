@@ -232,10 +232,16 @@ public class SMSGateway implements SerialDataListener{
     //Commands + answers
     //
     public String readAllMessagesRaw() {
+    	waitABit(1000); //TODO tweeka
+    	logger.info("---->Sending: AT+CMGF=1");
+    	serial.write("AT+CMGF=1\r");
+    	waitABit(1000); //TODO tweeka
+    	String msgs = readAnswer();
+    	waitABit(1000); //TODO tweeka
         logger.info("---->Sending: AT+CMGL=\"ALL\"");
         serial.write("AT+CMGL=\"ALL\"\r\n");
         waitABit(1000); //TODO tweeka
-        String msgs = readAnswer();
+        msgs = readAnswer();
         logger.info("Raw data from GSM module:\n [{}]", msgs);
         return msgs;
         /*
