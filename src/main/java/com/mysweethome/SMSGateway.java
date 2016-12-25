@@ -69,7 +69,7 @@ public class SMSGateway implements SerialDataListener{
         	logger.error("ERROR opening serial communication to the GPRS module", e);
         }
 
-        waitABit(3000);
+        waitABit(5000);
         
         if (serial.isOpen()) logger.debug("Serial Port Open!");
         if (serial.isClosed()) logger.debug("Serial Port Closed!");
