@@ -117,6 +117,8 @@ public class SMSGateway implements SerialDataListener{
          // print out the data received to the console
          //http://www.developershome.com/sms/resultCodes3.asp
          logger.info("Incoming event arrived from the GSM module");
+         System.out.println(">>>>"+event.getData());
+         System.out.println(">>>>"+event.getSource());
          String response = event.getData();
          
          //String response = iSMSGateway.readAnswer();
