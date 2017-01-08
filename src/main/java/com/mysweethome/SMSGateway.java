@@ -80,6 +80,10 @@ public class SMSGateway implements SerialDataListener{
         String response = readAnswer(); 
         if (response == null || response.equals("")) {
         	logger.error("GPRS ERROR. It didnt respond to AT command");
+        	
+        	//TODO test to add the listener anyway
+        	serial.addListener(iSerialDataListener);
+        	
         	return;
         }
 
