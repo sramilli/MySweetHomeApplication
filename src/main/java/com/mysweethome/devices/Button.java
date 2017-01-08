@@ -29,14 +29,14 @@ public class Button{
     private GpioPinDigitalInput iPin;  //TODO final?
     
     public Button(int aPin){
-
-    	if (MySweetHomeProperties.USE_INTERNAL_GPIO_PULL_UPP_FOR_BUTTON){
+    	if (MySweetHomeProperties.USE_INTERNAL_GPIO_PULL_UPP){
     		iPin = gpio.provisionDigitalInputPin(Pi4jHelper.getPin(aPin), PinPullResistance.PULL_DOWN);
     	} else {
             iPin = gpio.provisionDigitalInputPin(Pi4jHelper.getPin(aPin));
     	}
         GpioUtil.setEdgeDetection(aPin, GpioUtil.EDGE_RISING);
         iPin.setDebounce(300);
+        logger.info("Initialized Button on pin [{}].", aPin);
     }
     
     public GpioPinDigitalInput getPin(){
