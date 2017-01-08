@@ -167,6 +167,8 @@ public class SMSGateway implements SerialDataListener{
         serial.write("AT\r\n");
         serial.flush();
         waitABit(2000); //TODO tweeka
+    	serial.write("AT+CMGF=1\r");
+    	waitABit(2000); //TODO tweeka
     }
     
     public void sendReadAllMessagesCommand(){
