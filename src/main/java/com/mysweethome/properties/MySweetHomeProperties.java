@@ -44,6 +44,7 @@ public class MySweetHomeProperties {
     public static String C = null;
     public static String ML_URL = null;
     public static int GSM_BAUD_RATE = 9600;
+    public static String UART_PORT_NAME = "/dev/ttyS0"; //RPI3
     public static String USER_1 = null;
     public static String USER_2 = null;
     public static String USER_3 = null;
@@ -65,6 +66,7 @@ public class MySweetHomeProperties {
             SOFT_SHUTDOWN_ENABLED = new Boolean(prop.getProperty("SOFT_SHUTDOWN_ENABLED"));
             THERMOMETER_LOCATION = prop.getProperty("THERMOMETER_LOCATION");
             THERMOMETER_GROUP = prop.getProperty("THERMOMETER_GROUP");
+            UART_PORT_NAME = prop.getProperty("UART_PORT_NAME");
             GSM_BAUD_RATE = new Integer(prop.getProperty("gsmBaudRate"));
             GREEN_HEATER_STATUS_LED = new Integer(prop.getProperty("GREEN_HEATER_STATUS_LED"));
             HEATER_RELAY = new Integer(prop.getProperty("HEATER_RELAY"));

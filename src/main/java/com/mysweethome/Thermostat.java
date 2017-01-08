@@ -104,6 +104,7 @@ public class Thermostat implements GpioPinListenerDigital {
             
         } catch (Throwable ex) {
             ex.printStackTrace();
+            logger.error("ERROR instantiating Thermostat", ex);
         }
     }
     

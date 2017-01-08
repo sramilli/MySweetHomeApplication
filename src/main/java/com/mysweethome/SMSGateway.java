@@ -54,6 +54,7 @@ public class SMSGateway implements SerialDataListener{
         iSerialDataListener = this;
         logger.info("... connect to serial MODEM using settings: [{}], N, 8, 1.", MySweetHomeProperties.GSM_BAUD_RATE);
         // create an instance of the serial communications class
+        waitABit(15000);
         try {
             serial = SerialFactory.createInstance();
             
@@ -61,7 +62,7 @@ public class SMSGateway implements SerialDataListener{
             
             //serial.open(Serial.DEFAULT_COM_PORT, MySweetHomeProperties.GSM_BAUD_RATE);
             
-            serial.open("/dev/ttyS0", MySweetHomeProperties.GSM_BAUD_RATE);
+            serial.open(MySweetHomeProperties.UART_PORT_NAME, MySweetHomeProperties.GSM_BAUD_RATE);
             
             
             
@@ -69,7 +70,7 @@ public class SMSGateway implements SerialDataListener{
         	logger.error("ERROR opening serial communication to the GPRS module", e);
         }
 
-        waitABit(5000);
+        waitABit(2000);
         
         if (serial.isOpen()) logger.debug("Serial Port Open!");
         if (serial.isClosed()) logger.debug("Serial Port Closed!");
@@ -108,11 +109,12 @@ public class SMSGateway implements SerialDataListener{
     ////////////
     
      public void dataReceived(SerialDataEvent event) {
+    	 this.removeListener(this);
          // print out the data received to the console
          //http://www.developershome.com/sms/resultCodes3.asp
          logger.info("Incoming event arrived from the GSM module");
          String response = event.getData();
-         this.removeListener(this);
+         
          //String response = iSMSGateway.readAnswer();
          if (GSMDataInterpreter.getCommand(response).equals(GSMCommand.MESSAGE_ARRIVED)){
             logger.info("Data received:  ---->[{}]<----", response);
@@ -218,6 +220,11 @@ public class SMSGateway implements SerialDataListener{
         StringBuffer tReply = new StringBuffer();
         while (serial.availableBytes() > 0) {
             tReply.append(serial.read());
+        } 
+        waitABit(1000);
+        while (serial.availableBytes() > 0) {
+            tReply.append(serial.read());
+            logger.warn("READIND A SECOND CHUNK FROM GSM");
         } 
         if (tReply.length() < 1) {
         	logger.debug("No bytes available on the serial connection. Resulting string: [{}]", tReply.toString());
