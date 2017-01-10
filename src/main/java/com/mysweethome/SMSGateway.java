@@ -66,7 +66,7 @@ public class SMSGateway implements SerialDataListener{
         
         sendAT();
         setTextMode();
-        String response = readAnswer(); 
+        String response = readFromSerial(); 
         if (response == null || response.equals("")) {
         	logger.error("GPRS ERROR. It didnt respond to AT command");
         	
@@ -77,7 +77,7 @@ public class SMSGateway implements SerialDataListener{
         }
 
         logger.info("Reading all old message present on the SIM at boot");
-        List<SMS> tSMSs = this.getAllMessages();
+        List<SMS> tSMSs = getAllMessages();
         if (tSMSs.size() > 0){
         	SMSHelper.printAllMessages(tSMSs);
             deleteAllMessages(tSMSs);
@@ -171,10 +171,10 @@ public class SMSGateway implements SerialDataListener{
         */
     	
     	Helper.waitABit(1000);
-    	setTextMode();
-    	String msgs = readAnswer();
+    	//setTextMode();
+    	String msgs = readFromSerial();  //empty the buffer
     	sendReadAllMessages();
-        msgs = readAnswer();
+        msgs = readFromSerial();
         logger.debug("Raw data from GSM module: [\n{}\n]", msgs);
         
         return msgs;
@@ -184,20 +184,20 @@ public class SMSGateway implements SerialDataListener{
         logger.debug("Send SMS to nr [{}] message [{}]", aNumberRecipient, aMessage);
         
         sendAT();
-        readAnswer();
+        readFromSerial();
 
         setTextMode();
-        readAnswer();
+        readFromSerial();
         
         sendNewSMS_number(aNumberRecipient);
-        readAnswer();
+        readFromSerial();
 
         sendNewSMS_message(aMessage);
         sendNewSMS_terminate();
         
         //this is needed because sending the sms takes time
         Helper.waitABit(4000);
-        readAnswer();
+        readFromSerial();
     }
     
     
@@ -238,13 +238,13 @@ public class SMSGateway implements SerialDataListener{
     public String deleteMsgAtCertainPosition(int aPos) {
         logger.debug("---->Sending AT Command: AT+CMGD=[{}]", aPos);
         sendATCommand("AT+CMGD=" + aPos);
-        return readAnswer();
+        return readFromSerial();
     }
     
     public String readMsgAtCertainPosition(int aPos) {
         logger.info("---->Sending AT Command: AT+CMGR=[{}]", aPos);
         sendATCommand("AT+CMGR=" + aPos);
-        return readAnswer();
+        return readFromSerial();
     }
     
     /*
@@ -272,7 +272,7 @@ public class SMSGateway implements SerialDataListener{
     	Helper.waitABit(2000);
     }
     
-    public String readAnswer() {
+    public String readFromSerial() {
     	logger.debug("Reading answer from GSM module");
         Helper.waitABit(5000);
         StringBuffer tReply = new StringBuffer();
@@ -302,7 +302,7 @@ public class SMSGateway implements SerialDataListener{
         for (int i = 0; i < 10; i++) {
             logger.info("----Sending: AT ([{}]), [{}]", i, new Date().toString());
             serial.write("AT\r");
-            readAnswer();
+            readFromSerial();
             Helper.waitABit(5000);
         }
     }
