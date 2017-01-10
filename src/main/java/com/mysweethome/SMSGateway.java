@@ -301,7 +301,7 @@ public class SMSGateway implements SerialDataListener{
     }
     
     public String deleteMsgAtCertainPosition(int aPos) {
-        logger.info("---->Sending: AT+CMGD=", aPos);
+        logger.info("---->Sending: AT+CMGD=[{}]", aPos);
         serial.write("AT+CMGD=" + aPos + "\r");
         waitABit(1000); //TODO tweeka
         return readAnswer();

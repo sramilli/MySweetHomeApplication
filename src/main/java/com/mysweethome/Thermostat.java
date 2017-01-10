@@ -116,13 +116,15 @@ public class Thermostat implements GpioPinListenerDigital {
         System.out.println("--------------handleGpioPinDigitalStateChangeEvent---------");
         System.out.println(event.getPin());
         System.out.println(tPin.getMode());
-        System.out.println(tPin.getPullResistance());
+        if (PinState.HIGH.equals(event.getState())) System.out.println("High Edge");
+        if (PinState.LOW.equals(event.getState())) System.out.println("Low Edge");
+        System.out.println("internal "+tPin.getPullResistance());
         System.out.println("-----------------------");
         if (tPin == iModeButton.getPin()) {
             if (PinState.HIGH.equals(event.getState())) {
                 this.switchMode();
                 logger.info("Thermostat: Mode Button pressed. Switched to MODE [{}]", this.getThermostatState().getState());
-            }
+            } // ignore releasing button (LOW)
 
         } else if (tPin == iManualTherostat.getPin()) {
             if (PinState.HIGH.equals(event.getState())) {
