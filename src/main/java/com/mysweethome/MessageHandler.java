@@ -136,40 +136,4 @@ public class MessageHandler {
         }
     }
 
-    /*   Keep if i want to eliminate the listener
-    public void startPollingIncomingCommands(boolean aDeleteReadMessages, int aSeconds) {
-        timer = new Timer();
-        //every 30 seconds
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                List<SMS> tSMSs = iSMSGateway.getAllMessages();
-                Collections.sort(tSMSs);
-                Collections.reverse(tSMSs);
-                //print the list
-                System.out.println("List of all messages on the modem ordered by date:");
-                for (SMS tSMS : tSMSs) {
-                    System.out.println(tSMS);
-                }
-                //check for valid commands
-                for (SMS tSMS : tSMSs) {
-                    if (tSMS.isDateValid() && tSMS.senderAuthorized() && (CommandParser.parse(tSMS)).isValid()) {
-                        System.out.println("Date Valid & User Authorized & Command is valid. Executing: -------> " + tSMS);
-                        iController.executeCommand(CommandParser.parse(tSMS));
-                        break; //execute only last command
-                    } else {
-                        System.out.println("SMS discarded: " + tSMS);
-                    }
-                }
-                if (aDeleteReadMessages) {
-                    //TODO delete all messages
-                    for (SMS tSMS : tSMSs) {
-                        System.out.println("Delete message "+tSMS);
-                        String tResp = iSMSGateway.deleteMsgAtCertainPosition(tSMS.getPosition());
-                        System.out.println(tResp);
-                    }
-                }
-            }
-        }, 0, aSeconds * 1000);
-    }*/
 }

@@ -143,4 +143,13 @@ public class Helper {
         return cal;
     }
     
+    public static void waitABit(int a) {
+        try {
+            // wait 1 second before continuing
+            Thread.sleep(a);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
 }

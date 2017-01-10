@@ -6,20 +6,16 @@
 package com.mysweethome;
 
 import com.mysweethome.entity.SMS;
+import com.mysweethome.helper.Helper;
+import com.mysweethome.helper.SMSHelper;
 import com.mysweethome.properties.MySweetHomeProperties;
 import com.pi4j.io.serial.Serial;
 import com.pi4j.io.serial.SerialDataEvent;
 import com.pi4j.io.serial.SerialDataListener;
 import com.pi4j.io.serial.SerialFactory;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.StringTokenizer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +24,7 @@ import org.slf4j.LoggerFactory;
  * @author Ste
  */
 public class SMSGateway implements SerialDataListener{
+	
     static Logger logger = LoggerFactory.getLogger(SMSGateway.class);
     private static SMSGateway iInstance = null;
     private static MessageHandler iMessageHandler = null;
@@ -35,6 +32,7 @@ public class SMSGateway implements SerialDataListener{
     Serial serial;
     SerialDataListener iSerialDataListener = null;
     
+    static final private String TERMINAL_CH = "\r";
     static final private char ctrlZ = (char) 26;
     static final private char ctrlD = (char) 4;
 
@@ -53,30 +51,21 @@ public class SMSGateway implements SerialDataListener{
 
         iSerialDataListener = this;
         logger.info("... connect to serial MODEM using settings: [{}], N, 8, 1.", MySweetHomeProperties.GSM_BAUD_RATE);
-        // create an instance of the serial communications class
-        waitABit(15000);
         try {
             serial = SerialFactory.createInstance();
-            
-            //TODO WTF!!!!!!
-            
-            //serial.open(Serial.DEFAULT_COM_PORT, MySweetHomeProperties.GSM_BAUD_RATE);
-            
             serial.open(MySweetHomeProperties.UART_PORT_NAME, MySweetHomeProperties.GSM_BAUD_RATE);
-            
-            
-            
         } catch (Throwable e) {
         	logger.error("ERROR opening serial communication to the GPRS module", e);
         }
 
-        waitABit(2000);
+        Helper.waitABit(6000);
         
         if (serial.isOpen()) logger.debug("Serial Port Open!");
         if (serial.isClosed()) logger.debug("Serial Port Closed!");
         if (serial.isShutdown()) logger.debug("Serial Port Closed!");
         
-        sendATCommand();
+        sendAT();
+        setTextMode();
         String response = readAnswer(); 
         if (response == null || response.equals("")) {
         	logger.error("GPRS ERROR. It didnt respond to AT command");
@@ -87,103 +76,60 @@ public class SMSGateway implements SerialDataListener{
         	return;
         }
 
-        // create and register the serial data listener
-        /*serial.addListener(new SerialDataListener() {
-             @Override
-             public void dataReceived(SerialDataEvent event) {
-                 // print out the data received to the console
-                 waitABit(2000);
-                 System.out.println("");
-                 System.out.print("Resp---->"+event.getData()+"<----");
-             
-         });}*/
         logger.info("Reading all old message present on the SIM at boot");
         List<SMS> tSMSs = this.getAllMessages();
         if (tSMSs.size() > 0){
-            printAllMessages(tSMSs);
+        	SMSHelper.printAllMessages(tSMSs);
             deleteAllMessages(tSMSs);
         } else {
             logger.info("No message present on the modem at startup");
         }
+        
         serial.addListener(iSerialDataListener);
     }
     
-    ////////////
-    // listener from Thermostat
-    ////////////
+
+    /*
+     * Listener
+     */
     
      public void dataReceived(SerialDataEvent event) {
-    	 this.removeListener(this);
-    	 waitABit(3000);
-         // print out the data received to the console
+    	 removeListener(this);
+    	 Helper.waitABit(3000);
          //http://www.developershome.com/sms/resultCodes3.asp
          logger.info("Incoming event arrived from the GSM module");
-         System.out.println(">>>>"+event.getData());
-         System.out.println(">>>>"+event.getSource());
+         logger.debug("event data: [{}]", event.getData());
+         logger.debug("event source: [{}]", event.getSource());
          String response = event.getData();
          
-         //String response = iSMSGateway.readAnswer();
          if (GSMDataInterpreter.getCommand(response).equals(GSMCommand.MESSAGE_ARRIVED)){
             logger.info("Data received:  ---->[{}]<----", response);
             
             List<SMS> tSMSs = getAllMessages();
-            printAllMessages(tSMSs);
+            SMSHelper.printAllMessages(tSMSs);
             
             iMessageHandler.processReceivedSMSS(tSMSs);
             
-            //delete all messages
-            this.deleteAllMessages(tSMSs);
+            deleteAllMessages(tSMSs);
          }
-         this.addListener(this);
+         addListener(this);
      }
 
 
+    
+    
+    /*
+     * High level functions
+     */
 
-    //
-    //Collection utility
-    //
-    public void deleteAllMessages(Collection<SMS> aMessages){
-        logger.info("Deleting all messages");
-        for (SMS tSMS : aMessages) {
-            logger.info("Delete message [{}] ", tSMS);
-            String tResp = this.deleteMsgAtCertainPosition(tSMS.getPosition());
-            logger.info("--->[{}] ", tResp);
-        }
-        logger.info("All messages deleted");
+    public List<SMS> getAllMessages() {
+        //read all messages and parse them
+        String rawMessageString = readAllMessagesRaw();
+        return SMSHelper.parseAllMessages(rawMessageString);
     }
     
-    public void printAllMessages(Collection<SMS> aMessages){
-        //print the list
-        logger.info("List of all messages on the modem ordered by date");
-        for (SMS tSMS : aMessages) {
-            logger.info("[{}]", tSMS);
-        }
-    }
-    
-    //
-    //Simple send AT command
-    //
-    public void sendATCommand (){
-        logger.info("---->Sending: AT");
-        serial.write("AT\r\n");
-        serial.flush();
-        waitABit(2000); //TODO tweeka
-    	serial.write("AT+CMGF=1\r");
-    	waitABit(2000); //TODO tweeka
-    }
-    
-    public void sendReadAllMessagesCommand(){
-        logger.info("atReadAllMessages:---->Sending: AT+CMGL=\"ALL\"");
-        serial.write("AT+CMGL=\"ALL\"\r");
-        waitABit(1000);
-    }
-    
-    
-    //
-    //Send message to user
-    //
     public void sendStatusToUser(String aRecipient, String aMessage) {
-        logger.info("Sending Status message [{}] to recipient [{}] ", aMessage, aRecipient);
+        logger.info("Sending Status message");
         sendSMS(aRecipient, aMessage);
     }
     
@@ -198,40 +144,142 @@ public class SMSGateway implements SerialDataListener{
                 + "5) help\n"
                 + "6) register +391234512345\n"
                 + "7) ProgramDaily 6:15-7:45"
-                + "8) Program 6:15-7:45");
+                + "8) ProgramDaily"
+                + "9) Program 6:15-7:45");
+    }
+    
+    public void deleteAllMessages(Collection<SMS> aMessages){
+        logger.info("Deleting all messages");
+        for (SMS tSMS : aMessages) {
+            logger.info("Delete message [{}] ", tSMS);
+            String tResp = deleteMsgAtCertainPosition(tSMS.getPosition());
+            logger.debug("--->[{}] ", tResp);
+        }
+        logger.info("All messages deleted");
+    }
+    
+    public String readAllMessagesRaw() {
+        /*
+        AT+CMGL="ALL"
+        +CMGL: 1,"REC READ","Telia","","15/04/27,21:31:40+08"
+        Ditt saldo borjar bli lagt. Sla *120# lur/skicka for att kontrollera saldo. Ladda direkt via kontokort, m.telia.se/snabbladda eller las mer om de andra l
+        +CMGL: 2,"REC READ","Telia","","15/04/27,21:31:41+08"
+        addningssatten pa www.telia.se/ladda. Halsningar Telia
+        +CMGL: 3,"REC READ","+46700447531","","15/05/02,18:01:08+08"
+        Sms di prova
+        OK
+        */
+    	
+    	Helper.waitABit(1000);
+    	setTextMode();
+    	String msgs = readAnswer();
+    	sendReadAllMessages();
+        msgs = readAnswer();
+        logger.debug("Raw data from GSM module: [\n{}\n]", msgs);
+        
+        return msgs;
     }
     
     public void sendSMS(String aNumberRecipient, String aMessage) {
-        logger.info("---->Sending: AT");
-        serial.write("AT\r");
-        readAnswerAndPrint();
+        logger.debug("Send SMS to nr [{}] message [{}]", aNumberRecipient, aMessage);
+        
+        sendAT();
+        readAnswer();
 
-        logger.info("---->Sending: AT+CMGF=1");
-        serial.write("AT+CMGF=1\r");
-        readAnswerAndPrint();
+        setTextMode();
+        readAnswer();
+        
+        sendNewSMS_number(aNumberRecipient);
+        readAnswer();
 
-        logger.info("---->Sending: AT+CMGS=\"[{}]\"", aNumberRecipient);
-        serial.write("AT+CMGS=\""+aNumberRecipient+"\"\r");
-        readAnswerAndPrint();
-
-        logger.info("---->Sending:  [{}]", aMessage);
-        serial.write(aMessage + ctrlZ);
+        sendNewSMS_message(aMessage);
+        sendNewSMS_terminate();
+        
         //this is needed because sending the sms takes time
-        waitABit(2000);
-        readAnswerAndPrint();
+        Helper.waitABit(4000);
+        readAnswer();
     }
     
-    //
-    //Simple read
-    //
+    
+    
+    /*
+     * Implementation
+     */
+    
+    public void setTextMode(){
+        logger.debug("---->Sending AT Command: AT+CMGF=1");
+        sendATCommand("AT+CMGF=1");
+    }
+    
+    public void sendAT(){
+        logger.debug("---->Sending AT Command: AT");
+        sendATCommand("AT");
+    }
+    
+    public void sendReadAllMessages(){
+    	logger.debug("---->Sending AT Command: AT+CMGL=\"ALL\"");
+    	sendATCommand("AT+CMGL=\"ALL\"");
+    	Helper.waitABit(4000);
+    }
+    
+    public void sendNewSMS_number(String aNumberRecipient){
+    	logger.debug("---->Sending AT Command: AT+CMGS=\"{}\"", aNumberRecipient);
+    	sendATCommand("AT+CMGS=\"" + aNumberRecipient + "\"");
+    }
+    
+    public void sendNewSMS_message(String aMessage){
+    	sendString(aMessage);
+    }
+    
+    public void sendNewSMS_terminate(){
+    	sendChar(ctrlZ);
+    }
+    
+    public String deleteMsgAtCertainPosition(int aPos) {
+        logger.debug("---->Sending AT Command: AT+CMGD=[{}]", aPos);
+        sendATCommand("AT+CMGD=" + aPos);
+        return readAnswer();
+    }
+    
+    public String readMsgAtCertainPosition(int aPos) {
+        logger.info("---->Sending AT Command: AT+CMGR=[{}]", aPos);
+        sendATCommand("AT+CMGR=" + aPos);
+        return readAnswer();
+    }
+    
+    /*
+     * Serial Commands
+     */
+    
+    private void sendATCommand(String aCommand){
+    	logger.debug("---->Sending String: " + aCommand + TERMINAL_CH);
+    	serial.write(aCommand + TERMINAL_CH);
+    	serial.flush();
+    	Helper.waitABit(2000);
+    }
+    
+    private void sendString(String aString){
+    	logger.debug("---->Sending String: " + aString);
+    	serial.write(aString);
+    	serial.flush();
+    	Helper.waitABit(2000);
+    }
+    
+    private void sendChar(char aChar){
+    	logger.debug("---->Sending char: " + aChar);
+    	serial.write(aChar);
+    	serial.flush();
+    	Helper.waitABit(2000);
+    }
+    
     public String readAnswer() {
-    	logger.debug("Reading answer from MODEM");
-        waitABit(1000);
+    	logger.debug("Reading answer from GSM module");
+        Helper.waitABit(1000);
         StringBuffer tReply = new StringBuffer();
         while (serial.availableBytes() > 0) {
             tReply.append(serial.read());
         } 
-        waitABit(1000);
+        Helper.waitABit(1000);
         while (serial.availableBytes() > 0) {
             tReply.append(serial.read());
             logger.warn("READIND A SECOND CHUNK FROM GSM");
@@ -239,208 +287,32 @@ public class SMSGateway implements SerialDataListener{
         if (tReply.length() < 1) {
         	logger.debug("No bytes available on the serial connection. Resulting string: [{}]", tReply.toString());
         } else {
-            logger.debug("Response from modem: [{}]", tReply.toString());
+            logger.debug("Response from GSM module: [\n{}\n]", tReply.toString());
         }
         return tReply.toString();
     }
     
 
-    //
-    //Commands + answers
-    //
-    public String readAllMessagesRaw() {
-    	waitABit(1000); //TODO tweeka
-    	logger.info("---->Sending: AT+CMGF=1");
-    	serial.write("AT+CMGF=1\r");
-    	waitABit(1000); //TODO tweeka
-    	String msgs = readAnswer();
-    	waitABit(1000); //TODO tweeka
-        logger.info("---->Sending: AT+CMGL=\"ALL\"");
-        serial.write("AT+CMGL=\"ALL\"\r\n");
-        waitABit(1000); //TODO tweeka
-        msgs = readAnswer();
-        logger.info("Raw data from GSM module:\n [{}]", msgs);
-        return msgs;
-        /*
-         AT+CMGL="ALL"
-         +CMGL: 1,"REC READ","Telia","","15/04/27,21:31:40+08"
-         Ditt saldo borjar bli lagt. Sla *120# lur/skicka for att kontrollera saldo. Ladda direkt via kontokort, m.telia.se/snabbladda eller las mer om de andra l
-         +CMGL: 2,"REC READ","Telia","","15/04/27,21:31:41+08"
-         addningssatten pa www.telia.se/ladda. Halsningar Telia
-         +CMGL: 3,"REC READ","+46700447531","","15/05/02,18:01:08+08"
-         Sms di prova
-         +CMGL: 4,"REC READ","+46700447531","","15/05/02,18:01:34+08"
-         Andra prova
-         +CMGL: 5,"REC READ","+46700447531","","15/05/02,18:01:51+08"
-         Terza prova
-         +CMGL: 6,"REC READ","Telia","","15/05/14,19:32:43+08"
-         Du har nu fatt 25 kr i bonus. Bonusen far du i samband med dina fyra forsta laddningar efter din registrering. Total bonus blir 100 kr. Mvh Telia
-         +CMGL: 7,"REC READ","Telia","","15/05/14,19:32:44+08"
-         Ditt kort ar nu laddat. For att se ditt saldo tryck *120# lur/skicka. For mer information om priser se www.telia.se/refill
-         +CMGL: 8,"REC READ","+46700447531","","15/05/21,22:37:34+08"
-         . 
-         +CMGL: 9,"REC READ","+46700447531","","15/05/21,22:38:21+08"
-         00510075006500730074006F000A00C80020000A0055006E00200073006F006C006F0020006D0065007300730061006700670069006F
-         +CMGL: 10,"REC READ","+46700447531","","15/05/26,22:59:28+08"
-         On
-         OK
-         */
-    }
-
-    public List<SMS> getAllMessages() {
-        //read all messages and parse them
-        String rawMessageString = readAllMessagesRaw();
-        return parseAllMessages(rawMessageString);
-    }
     
-    public String readMsgAtCertainPosition(int aPos) {
-        logger.info("---->Sending: AT+CMGR=[{}]", aPos);
-        serial.write("AT+CMGR=" + aPos + "\r");
-        waitABit(1000); //TODO tweeka
-        return readAnswer();
-    }
     
-    public String deleteMsgAtCertainPosition(int aPos) {
-        logger.info("---->Sending: AT+CMGD=[{}]", aPos);
-        serial.write("AT+CMGD=" + aPos + "\r");
-        waitABit(1000); //TODO tweeka
-        return readAnswer();
-    }
-    
-    private void readAnswerAndPrint() {
-        waitABit(1000);
-        StringBuffer reply = new StringBuffer();
-        while (serial.availableBytes() > 0) {
-            reply.append(serial.read());
-        }
-        if (reply.length() > 0) {
-            logger.info("//////:\n [{}] //////", reply);
-        } else {
-            logger.warn("<---->NO ANSWER FROM GSM MODULE!");
-        }
-        //whaitABit(1000);
-    }
-    
-    //
-    //Parse utility
-    //
-    public List<SMS> parseAllMessages(String aMessages) {
-        //read all messages
-        logger.info("Start parsing string: start string-->[{}]<--end string", aMessages);
-        StringTokenizer st = new StringTokenizer(aMessages, "\r\n");
-        //parse messages
-        List<SMS> tSMSs = new ArrayList<SMS>();
-        int i = 1;
-        List<String> tRows = new ArrayList<String>();
-
-        while (st.hasMoreTokens()) {
-            tRows.add(st.nextToken());
-        }
-        boolean headClean = false, smsNotAddedYet = false;
-        SMS tSMS = new SMS();
-
-        outerLoop:
-        for (int j = 0; j < tRows.size() - 1; j++) {
-            String s = tRows.get(j);
-            while (!headClean && !s.startsWith("+CMGL")) {
-                continue outerLoop;
-            }
-            headClean = true;
-            if (s.startsWith("+CMGL")) {
-                tSMS = parseHeaderAndSetData(s);
-                continue;
-            } else {
-                tSMS.setText(tSMS.getText() + s);
-                tSMSs.add(tSMS);
-                continue;
-            }
-        }
-        logger.info("Parsed [{}] smss", tSMSs.size());
-        Collections.sort(tSMSs);
-        Collections.reverse(tSMSs);
-        return tSMSs;
-    }
-    
-    public SMS parseHeaderAndSetData(String s) {
-       /*
-        * +CMGL: 4,"REC READ","+46700447531","","15/05/02,18:01:34+08"
-        * Set: Position, Date, Sender
-        */
-        StringTokenizer st = new StringTokenizer(s, ",");
-            SMS tSMS = new SMS();
-            
-            int tPosition;
-            String tSender;
-            Date tDate;
-            
-            String tToken = st.nextToken();
-            tPosition = parsePosition(tToken);
-            tToken = st.nextToken();
-            //iStatus = parseStatus();
-            tToken = st.nextToken();
-            tSender = parseSender(tToken);
-            tToken = st.nextToken();
-            //blank
-            tToken = st.nextToken();
-            tToken = tToken+" "+st.nextToken();
-            tDate = parseDate(tToken);
-            
-            tSMS.setPosition(tPosition);
-            tSMS.setSender(tSender);
-            tSMS.setDate(tDate);
-            
-            return tSMS;
-    }
-        
-    private int parsePosition(String aPosition){
-        int tPos = 0;
-        tPos = Integer.parseInt(aPosition.substring(aPosition.length()-2).trim());
-        return tPos;
-    }
-    
-    private String parseSender(String aSender){
-        String tSender = "";
-        tSender = aSender.replaceAll("\"", "").trim();
-        return tSender;
-    }
-
-    private Date parseDate(String aDate){
-        //"15/05/26 22:59:28+08"
-        Date tDate = new Date();
-        aDate = aDate.replaceAll("\"", "");
-        aDate = aDate.substring(0,14);
-        SimpleDateFormat formatter = new SimpleDateFormat("yy/MM/dd HH:mm");
-        try {
-            tDate = formatter.parse(aDate);
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
-        return tDate;
-    }
-    
-    //
-    //Test
-    //
+    /*
+     * Test
+     */
     public void testLoopingAT() {
         for (int i = 0; i < 10; i++) {
             logger.info("----Sending: AT ([{}]), [{}]", i, new Date().toString());
             serial.write("AT\r");
-            readAnswerAndPrint();
-            waitABit(5000);
+            readAnswer();
+            Helper.waitABit(5000);
         }
     }
     
     
     
     
-    private void waitABit(int a) {
-        try {
-            // wait 1 second before continuing
-            Thread.sleep(a);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
-    }
+    /*
+     * public methods
+     */
     
     public void removeListener(SerialDataListener aListener){
         serial.removeListener(aListener);
@@ -457,7 +329,5 @@ public class SMSGateway implements SerialDataListener{
             serial = null;
         }
     }
-
-
 
 }
