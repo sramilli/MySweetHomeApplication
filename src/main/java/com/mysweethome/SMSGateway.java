@@ -274,7 +274,7 @@ public class SMSGateway implements SerialDataListener{
     
     public String readAnswer() {
     	logger.debug("Reading answer from GSM module");
-        Helper.waitABit(1000);
+        Helper.waitABit(5000);
         StringBuffer tReply = new StringBuffer();
         while (serial.availableBytes() > 0) {
             tReply.append(serial.read());
