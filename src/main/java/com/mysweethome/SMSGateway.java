@@ -58,7 +58,7 @@ public class SMSGateway implements SerialDataListener{
         	logger.error("ERROR opening serial communication to the GPRS module", e);
         }
 
-        Helper.waitABit(6000);
+        //Helper.waitABit(6000);
         
         if (serial.isOpen()) logger.debug("Serial Port Open!");
         if (serial.isClosed()) logger.debug("Serial Port Closed!");
@@ -120,7 +120,7 @@ public class SMSGateway implements SerialDataListener{
     
      public void dataReceived(SerialDataEvent event) {
     	 removeListener(this);
-    	 Helper.waitABit(3000);
+    	 //Helper.waitABit(3000);
          //http://www.developershome.com/sms/resultCodes3.asp
          logger.info("Incoming event arrived from the GSM module");
          logger.debug("event data: [{}]", event.getData());
@@ -195,7 +195,7 @@ public class SMSGateway implements SerialDataListener{
         OK
         */
     	
-    	Helper.waitABit(1000);
+    	//Helper.waitABit(1000);
     	//setTextMode();
     	String msgs = readFromSerial();  //empty the buffer
     	sendReadAllMessages();
@@ -221,7 +221,7 @@ public class SMSGateway implements SerialDataListener{
         sendNewSMS_terminate();
         
         //this is needed because sending the sms takes time
-        Helper.waitABit(4000);
+        //Helper.waitABit(4000);
         readFromSerial();
     }
     
@@ -244,7 +244,7 @@ public class SMSGateway implements SerialDataListener{
     public void sendReadAllMessages(){
     	logger.debug("---->Sending AT Command: AT+CMGL=\"ALL\"");
     	sendATCommand("AT+CMGL=\"ALL\"");
-    	Helper.waitABit(4000);
+    	//Helper.waitABit(4000);
     }
     
     public void sendNewSMS_number(String aNumberRecipient){
@@ -285,24 +285,24 @@ public class SMSGateway implements SerialDataListener{
     	logger.debug("---->Sending String: ---->" + aString +"<----");
     	serial.write(aString);
     	serial.flush();
-    	Helper.waitABit(2000);
+    	//Helper.waitABit(2000);
     }
     
     private void sendChar(char aChar){
     	logger.debug("---->Sending char: " + aChar);
     	serial.write(aChar);
     	serial.flush();
-    	Helper.waitABit(2000);
+    	//Helper.waitABit(2000);
     }
     
     public String readFromSerial() {
     	logger.debug("Reading answer from GSM module");
-        Helper.waitABit(3000);
+        //Helper.waitABit(3000);
         StringBuffer tReply = new StringBuffer();
         while (serial.availableBytes() > 0) {
             tReply.append(serial.read());
         } 
-        /*Helper.waitABit(1000);
+        /*//Helper.waitABit(1000);
         while (serial.availableBytes() > 0) {
             tReply.append(serial.read());
             logger.warn("READIND A SECOND CHUNK FROM GSM");
@@ -326,7 +326,7 @@ public class SMSGateway implements SerialDataListener{
             logger.info("----Sending: AT ([{}]), [{}]", i, new Date().toString());
             serial.write("AT\r");
             readFromSerial();
-            Helper.waitABit(5000);
+            //Helper.waitABit(5000);
         }
     }
     
