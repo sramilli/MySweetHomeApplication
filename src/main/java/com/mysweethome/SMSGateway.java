@@ -284,14 +284,14 @@ public class SMSGateway implements SerialDataListener{
     private void sendString(String aString){
     	logger.debug("---->Sending String: ---->" + aString +"<----");
     	serial.write(aString);
-    	serial.flush();
+    	//serial.flush();
     	Helper.waitABit(2000);
     }
     
     private void sendChar(char aChar){
     	logger.debug("---->Sending char: " + aChar);
     	serial.write(aChar);
-    	serial.flush();
+    	//serial.flush();
     	Helper.waitABit(2000);
     }
     
