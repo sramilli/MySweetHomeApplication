@@ -65,17 +65,17 @@ public class SMSGateway implements SerialDataListener{
         if (serial.isShutdown()) logger.debug("Serial Port Closed!");
         
         sendAT();
-        readFromSerial(); 
+        //readFromSerial(); 
         sendAT();
-        readFromSerial(); 
+        //readFromSerial(); 
         sendAT();
-        readFromSerial(); 
+        //readFromSerial(); 
         sendAT();
-        readFromSerial(); 
+        //readFromSerial(); 
         sendAT();
-        readFromSerial(); 
+        //readFromSerial(); 
         sendAT();
-        readFromSerial(); 
+        //readFromSerial(); 
         
         if (2==2) return;
         
