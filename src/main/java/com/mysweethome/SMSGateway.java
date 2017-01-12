@@ -32,7 +32,7 @@ public class SMSGateway implements SerialDataListener{
     Serial serial;
     SerialDataListener iSerialDataListener = null;
     
-    static final private String TERMINAL_CH = "\r";
+    static final private String TERMINAL_STR = "\r";
     static final private char ctrlZ = (char) 26;
     static final private char ctrlD = (char) 4;
 
@@ -65,6 +65,7 @@ public class SMSGateway implements SerialDataListener{
         if (serial.isShutdown()) logger.debug("Serial Port Closed!");
         
         sendAT();
+        readFromSerial(); 
         setTextMode();
         String response = readFromSerial(); 
         if (response == null || response.equals("")) {
@@ -252,10 +253,8 @@ public class SMSGateway implements SerialDataListener{
      */
     
     private void sendATCommand(String aCommand){
-    	logger.debug("---->Sending String: " + aCommand + TERMINAL_CH);
-    	serial.write(aCommand + TERMINAL_CH);
-    	serial.flush();
-    	Helper.waitABit(2000);
+    	logger.debug("---->Sending AT command: " + aCommand);
+    	sendString(aCommand + TERMINAL_STR);
     }
     
     private void sendString(String aString){
@@ -274,7 +273,7 @@ public class SMSGateway implements SerialDataListener{
     
     public String readFromSerial() {
     	logger.debug("Reading answer from GSM module");
-        Helper.waitABit(5000);
+        Helper.waitABit(3000);
         StringBuffer tReply = new StringBuffer();
         while (serial.availableBytes() > 0) {
             tReply.append(serial.read());
