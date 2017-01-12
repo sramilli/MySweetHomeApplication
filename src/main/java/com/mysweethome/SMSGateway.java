@@ -66,6 +66,19 @@ public class SMSGateway implements SerialDataListener{
         
         sendAT();
         readFromSerial(); 
+        sendAT();
+        readFromSerial(); 
+        sendAT();
+        readFromSerial(); 
+        sendAT();
+        readFromSerial(); 
+        sendAT();
+        readFromSerial(); 
+        sendAT();
+        readFromSerial(); 
+        
+        if (2==2) return;
+        
         setTextMode();
         String response = readFromSerial(); 
         if (response == null || response.equals("")) {
