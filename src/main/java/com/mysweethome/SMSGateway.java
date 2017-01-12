@@ -32,7 +32,7 @@ public class SMSGateway implements SerialDataListener{
     Serial serial;
     SerialDataListener iSerialDataListener = null;
     
-    static final private String SIM900_TERMINAL_STR = "\r\n";
+    static final private String SIM900_TERMINAL_STR = "\r";
     static final private char ctrlZ = (char) 26;
     static final private char ctrlD = (char) 4;
 
@@ -65,31 +65,6 @@ public class SMSGateway implements SerialDataListener{
         if (serial.isShutdown()) logger.debug("Serial Port Closed!");
         
         sendAT();
-        //readFromSerial(); 
-        sendAT();
-        //readFromSerial(); 
-        sendAT();
-        //readFromSerial(); 
-        sendAT();
-        //readFromSerial(); 
-        sendAT();
-        //readFromSerial(); 
-        sendAT();
-        //readFromSerial(); 
-        
-        sendString("AT\r\n");
-        sendString("AT\r\n");
-        sendString("AT\r\n");
-        sendString("AT\r\n");
-        sendString("AT\r\n");
-        
-        serial.write("AT\r\n");
-        serial.write("AT\r\n");
-        serial.write("AT\r\n");
-        serial.write("AT\r\n");
-        
-        if (2==2) return;
-        
         setTextMode();
         String response = readFromSerial(); 
         if (response == null || response.equals("")) {
@@ -277,21 +252,19 @@ public class SMSGateway implements SerialDataListener{
      */
     
     private void sendATCommand(String aCommand){
-    	logger.debug("---->Sending AT command: " + aCommand);
-    	sendString(aCommand + '\r' + '\n');
+    	logger.debug("---->Sending String: " + aCommand + SIM900_TERMINAL_STR);
+    	sendString(aCommand + SIM900_TERMINAL_STR);
     }
     
     private void sendString(String aString){
     	logger.debug("---->Sending String: ---->" + aString +"<----");
     	serial.write(aString);
-    	//serial.flush();
     	Helper.waitABit(2000);
     }
     
     private void sendChar(char aChar){
-    	logger.debug("---->Sending char: " + aChar);
+    	logger.debug("---->Sending char: ---->" + aChar + "<----");
     	serial.write(aChar);
-    	//serial.flush();
     	Helper.waitABit(2000);
     }
     
@@ -302,15 +275,15 @@ public class SMSGateway implements SerialDataListener{
         while (serial.availableBytes() > 0) {
             tReply.append(serial.read());
         } 
-        /*Helper.waitABit(1000);
+        Helper.waitABit(1000);
         while (serial.availableBytes() > 0) {
             tReply.append(serial.read());
             logger.warn("READIND A SECOND CHUNK FROM GSM");
-        } */
+        } 
         if (tReply.length() < 1) {
         	logger.debug("No bytes available on the serial connection. Resulting string: [{}]", tReply.toString());
         } else {
-            logger.debug("Response from GSM module - length: [{}] contetnt:  [{}]", tReply.length(), tReply.toString());
+        	logger.debug("Response from GSM module - length: [{}] contetnt:  [{}]", tReply.length(), tReply.toString());
         }
         return tReply.toString();
     }
