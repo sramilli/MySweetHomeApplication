@@ -70,15 +70,17 @@ public class Thermostat implements GpioPinListenerDigital {
     public static boolean OFF = false;
     
     public final static String HELP_TEXT_USAGE = 
-                "Examples:\r"
-                + "1) on\r"
-                + "2) off\r"
-                + "3) manual\r"
-                + "4) status\r"
-                + "5) help\r"
-                + "6) register +391234512345\r"
-                + "7) Program 6:15-7:45\r"
-                + "8) ProgramDaily 6:15-7:45\r";
+            "Examples:\r\n"
+            + "1) on\r\n"
+            + "2) off\r\n"
+            + "3) manual\r\n"
+            + "4) status\r\n"
+            + "5) help\r\n"
+            + "6) register +391234512345\r\n"
+            + "7) ProgramDaily 6:15-7:45\r\n"
+            + "8) ProgramDaily\r\n"
+            + "9) Program 6:15-7:45\r\n"
+            + "10) Program\r\n";
 
     public Thermostat() {
         try {

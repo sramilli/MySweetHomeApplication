@@ -129,27 +129,27 @@ public class SMSGateway implements SerialDataListener{
         return SMSHelper.parseAllMessages(rawMessageString);
     }
     
-    public void sendStatusToUser(String aRecipient, String aMessage) {
-        logger.info("Sending Status message");
-        sendSMS(aRecipient, aMessage);
-    }
+//    public void sendStatusToUser(String aRecipient, String aMessage) {
+//        logger.info("Sending Status message");
+//        sendSMS(aRecipient, aMessage);
+//    }
     
-    public void sendHelpMessageToUser(String aRecipient) {
-        logger.info("Sendind Help message to [{}]", aRecipient);
-        sendSMS(aRecipient, 
-                "Examples:\r\n"
-                + "1) on\r\n"
-                + "2) off\r\n"
-                + "3) manual\r\n"
-                + "4) status\r\n"
-                + "5) help\r\n"
-                + "6) register +391234512345\r\n"
-                + "7) ProgramDaily 6:15-7:45\r\n"
-                + "8) ProgramDaily\r\n"
-                + "9) Program 6:15-7:45\r\n"
-                + "10) Program\r\n"
-        		);
-    }
+//    public void sendHelpMessageToUser(String aRecipient) {
+//        logger.info("Sendind Help message to [{}]", aRecipient);
+//        sendSMS(aRecipient, 
+//                "Examples:\r\n"
+//                + "1) on\r\n"
+//                + "2) off\r\n"
+//                + "3) manual\r\n"
+//                + "4) status\r\n"
+//                + "5) help\r\n"
+//                + "6) register +391234512345\r\n"
+//                + "7) ProgramDaily 6:15-7:45\r\n"
+//                + "8) ProgramDaily\r\n"
+//                + "9) Program 6:15-7:45\r\n"
+//                + "10) Program\r\n"
+//        		);
+//    }
     
     public void deleteAllMessages(Collection<SMS> aMessages){
         logger.info("Deleting all messages");
@@ -173,7 +173,7 @@ public class SMSGateway implements SerialDataListener{
         OK
         */
     	
-    	Helper.waitABit(1000);
+    	//Helper.waitABit(1000);
     	//setTextMode();
     	String msgs = readFromSerial();  //empty the buffer
     	sendReadAllMessages();
@@ -222,7 +222,7 @@ public class SMSGateway implements SerialDataListener{
     public void sendReadAllMessages(){
     	logger.debug("---->Sending AT Command: AT+CMGL=\"ALL\"");
     	sendATCommand("AT+CMGL=\"ALL\"");
-    	Helper.waitABit(4000);
+    	//Helper.waitABit(2000);
     }
     
     public void sendNewSMS_number(String aNumberRecipient){
@@ -273,7 +273,7 @@ public class SMSGateway implements SerialDataListener{
     
     public String readFromSerial() {
     	logger.debug("Reading answer from GSM module");
-        Helper.waitABit(3000);
+        Helper.waitABit(2000);
         StringBuffer tReply = new StringBuffer();
         while (serial.availableBytes() > 0) {
             tReply.append(serial.read());
