@@ -33,6 +33,7 @@ public class SMSGateway implements SerialDataListener{
     SerialDataListener iSerialDataListener = null;
     
     static final private String SIM900_TERMINAL_STR = "\r";
+    static final private String TERMINAL_STR = "\r\n";
     static final private char ctrlZ = (char) 26;
     static final private char ctrlD = (char) 4;
 
@@ -136,16 +137,18 @@ public class SMSGateway implements SerialDataListener{
     public void sendHelpMessageToUser(String aRecipient) {
         logger.info("Sendind Help message to [{}]", aRecipient);
         sendSMS(aRecipient, 
-                "Examples:\n"
-                + "1) on\n"
-                + "2) off\n"
-                + "3) manual\n"
-                + "4) status\n"
-                + "5) help\n"
-                + "6) register +391234512345\n"
-                + "7) ProgramDaily 6:15-7:45"
-                + "8) ProgramDaily"
-                + "9) Program 6:15-7:45");
+                "Examples:\r\n"
+                + "1) on\r\n"
+                + "2) off\r\n"
+                + "3) manual\r\n"
+                + "4) status\r\n"
+                + "5) help\r\n"
+                + "6) register +391234512345\r\n"
+                + "7) ProgramDaily 6:15-7:45\r\n"
+                + "8) ProgramDaily\r\n"
+                + "9) Program 6:15-7:45\r\n"
+                + "10) Program\r\n"
+        		);
     }
     
     public void deleteAllMessages(Collection<SMS> aMessages){
@@ -257,13 +260,13 @@ public class SMSGateway implements SerialDataListener{
     }
     
     private void sendString(String aString){
-    	logger.debug("---->Sending String: ---->" + aString +"<----");
+    	logger.debug("---->Sending String: [" + aString +"]");
     	serial.write(aString);
     	Helper.waitABit(2000);
     }
     
     private void sendChar(char aChar){
-    	logger.debug("---->Sending char: ---->" + aChar + "<----");
+    	logger.debug("---->Sending char: [" + aChar + "]");
     	serial.write(aChar);
     	Helper.waitABit(2000);
     }
