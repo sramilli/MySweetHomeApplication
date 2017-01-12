@@ -77,6 +77,12 @@ public class SMSGateway implements SerialDataListener{
         sendAT();
         //readFromSerial(); 
         
+        sendString("AT\r\n");
+        sendString("AT\r\n");
+        sendString("AT\r\n");
+        sendString("AT\r\n");
+        sendString("AT\r\n");
+        
         if (2==2) return;
         
         setTextMode();
