@@ -254,7 +254,7 @@ public class SMSGateway implements SerialDataListener{
     
     private void sendATCommand(String aCommand){
     	logger.debug("---->Sending AT command: " + aCommand);
-    	sendString(aCommand + SIM900_TERMINAL_STR);
+    	sendString(aCommand + "\r\n");
     }
     
     private void sendString(String aString){
