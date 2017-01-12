@@ -291,15 +291,15 @@ public class SMSGateway implements SerialDataListener{
         while (serial.availableBytes() > 0) {
             tReply.append(serial.read());
         } 
-        Helper.waitABit(1000);
+        /*Helper.waitABit(1000);
         while (serial.availableBytes() > 0) {
             tReply.append(serial.read());
             logger.warn("READIND A SECOND CHUNK FROM GSM");
-        } 
+        } */
         if (tReply.length() < 1) {
         	logger.debug("No bytes available on the serial connection. Resulting string: [{}]", tReply.toString());
         } else {
-            logger.debug("Response from GSM module: [\n{}\n]", tReply.toString());
+            logger.debug("Response from GSM module - length: [{}] contetnt:  [{}]", tReply.length(), tReply.toString());
         }
         return tReply.toString();
     }
