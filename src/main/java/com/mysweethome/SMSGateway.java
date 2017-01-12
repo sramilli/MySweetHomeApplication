@@ -83,6 +83,11 @@ public class SMSGateway implements SerialDataListener{
         sendString("AT\r\n");
         sendString("AT\r\n");
         
+        serial.write("AT\r\n");
+        serial.write("AT\r\n");
+        serial.write("AT\r\n");
+        serial.write("AT\r\n");
+        
         if (2==2) return;
         
         setTextMode();
