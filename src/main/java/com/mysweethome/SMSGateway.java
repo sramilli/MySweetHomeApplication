@@ -64,6 +64,16 @@ public class SMSGateway implements SerialDataListener{
         if (serial.isClosed()) logger.debug("Serial Port Closed!");
         if (serial.isShutdown()) logger.debug("Serial Port Closed!");
         
+        
+        //TODO test
+        if (2 == 2){
+        	sendAT2();
+            readFromSerial(); 
+            
+            return;
+        }
+
+        
         sendAT();
         readFromSerial(); 
         setTextMode();
@@ -260,6 +270,14 @@ public class SMSGateway implements SerialDataListener{
     private void sendString(String aString){
     	logger.debug("---->Sending String: " + aString);
     	serial.write(aString);
+    	serial.flush();
+    	Helper.waitABit(2000);
+    }
+    
+    private void sendAT2(){
+    	logger.debug("---->sendAT2: ");
+    	//serial.write("AT\r\n");
+    	serial.write("AT\r");
     	serial.flush();
     	Helper.waitABit(2000);
     }
