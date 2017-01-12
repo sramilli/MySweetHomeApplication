@@ -32,7 +32,7 @@ public class SMSGateway implements SerialDataListener{
     Serial serial;
     SerialDataListener iSerialDataListener = null;
     
-    static final private String TERMINAL_STR = "\r";
+    static final private String SIM900_TERMINAL_STR = "\r\n";
     static final private char ctrlZ = (char) 26;
     static final private char ctrlD = (char) 4;
 
@@ -63,16 +63,6 @@ public class SMSGateway implements SerialDataListener{
         if (serial.isOpen()) logger.debug("Serial Port Open!");
         if (serial.isClosed()) logger.debug("Serial Port Closed!");
         if (serial.isShutdown()) logger.debug("Serial Port Closed!");
-        
-        
-        //TODO test
-        if (2 == 2){
-        	sendAT2();
-            readFromSerial(); 
-            
-            return;
-        }
-
         
         sendAT();
         readFromSerial(); 
@@ -264,7 +254,7 @@ public class SMSGateway implements SerialDataListener{
     
     private void sendATCommand(String aCommand){
     	logger.debug("---->Sending AT command: " + aCommand);
-    	sendString(aCommand + TERMINAL_STR);
+    	sendString(aCommand + SIM900_TERMINAL_STR);
     }
     
     private void sendString(String aString){
