@@ -276,8 +276,8 @@ public class SMSGateway implements SerialDataListener{
     
     private void sendAT2(){
     	logger.debug("---->sendAT2: ");
-    	//serial.write("AT\r\n");
-    	serial.write("AT\r");
+    	serial.write("AT\r\n");
+    	//serial.write("AT\r");
     	serial.flush();
     	Helper.waitABit(2000);
     }
