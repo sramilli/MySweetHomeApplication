@@ -37,7 +37,6 @@ public class Garden{
     Pump iPump4;
     Pump iPump5;
     List<Pump> iPumps;
-    SensorDataLogger iLogger;
     
     private Timer iTimer;
     
@@ -53,8 +52,6 @@ public class Garden{
         iPump5 = new Pump(GardenProperties.TOPIC_PUMP_5, GardenProperties.CALIBRATION_PUMP_5, GardenProperties.DEFAULT_QUANTITY_PUMP_5);
         iPumps = new ArrayList<Pump>(Arrays.asList(iPump1, iPump2, iPump3, iPump4, iPump5));
         iTimer = new Timer(true);
-        //TODO move to thermostat?
-        iLogger = new SensorDataLogger();
     }
     
     //TODO erase, just for test
@@ -62,11 +59,9 @@ public class Garden{
     public void run() {
         logger.info("Garden Application Started");
         scheduleActivationAtHoursOfDay(GardenProperties.MORNING_WATERING_TIME, GardenProperties.EVENING_WATERING_TIME);
-        iLogger.start();
     }
     
     public void stop(){
-        iLogger.stop();
         //TODO stop Tascs
     }
     
