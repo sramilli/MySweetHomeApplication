@@ -146,7 +146,8 @@ public class Thermostat implements GpioPinListenerDigital {
         StringBuffer tResponse = new StringBuffer();
         tResponse.append("Running since: " + Helper.calToString(this.iRunningSince) + "\n");
         tResponse.append("State: " + this.getThermostatState().getState() + "\n");
-        tResponse.append("ProgramDaily: " + this.getProgramTimes() + "\n");
+        tResponse.append("ProgramDaily: " + this.getProgramDailyTimes() + "\n");
+        tResponse.append("Program: " + this.getProgramTimes() + "\n");
         tResponse.append("Last Temp read: " + TemperatureStore.LastTemperatureReadString);
         return tResponse.toString();
     }
@@ -163,13 +164,23 @@ public class Thermostat implements GpioPinListenerDigital {
         return iThermostatState;
     }
     
-    public String getProgramTimes(){
+    public String getProgramDailyTimes(){
         if (iStartTaskRepeated == null) return "not active";
         DateFormat sdf = new SimpleDateFormat("HH:mm");
         Calendar tLastStart = Calendar.getInstance();
         tLastStart.setTimeInMillis(iStartTaskRepeated.scheduledExecutionTime());
         Calendar tLastStop = Calendar.getInstance();
         tLastStop.setTimeInMillis(iStopTaskRepeated.scheduledExecutionTime());
+        return sdf.format(tLastStart.getTime()) + "-" + sdf.format(tLastStop.getTime());
+    }
+    
+    public String getProgramTimes(){
+        if (iStartTask == null) return "not active";
+        DateFormat sdf = new SimpleDateFormat("HH:mm");
+        Calendar tLastStart = Calendar.getInstance();
+        tLastStart.setTimeInMillis(iStartTask.scheduledExecutionTime());
+        Calendar tLastStop = Calendar.getInstance();
+        tLastStop.setTimeInMillis(iStopTask.scheduledExecutionTime());
         return sdf.format(tLastStart.getTime()) + "-" + sdf.format(tLastStop.getTime());
     }
     
