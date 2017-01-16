@@ -318,7 +318,7 @@ public class Thermostat implements GpioPinListenerDigital {
             return;
         }
         //TODO
-        Helper.printCal("Scheduling daily Ignition from: ", startDateParsed);
+        Helper.printCal("Scheduling daily ignition from: ", startDateParsed);
         Helper.printCal("Scheduling daily shutdown from: ", stopDateParsed);
         iStartTaskRepeated = new ThermostatIgnitionShutdownTimerTask(aThermostat, CommandType.ON_CONDITIONAL);
         iStopTaskRepeated = new ThermostatIgnitionShutdownTimerTask(aThermostat, CommandType.OFF_CONDITIONAL);
@@ -351,8 +351,8 @@ public class Thermostat implements GpioPinListenerDigital {
             return;
         }
         //TODO
-        Helper.printCal("Scheduling daily Ignition from: ", startDateParsed);
-        Helper.printCal("Scheduling daily shutdown from: ", stopDateParsed);
+        Helper.printCal("Scheduling single ignition from: ", startDateParsed);
+        Helper.printCal("Scheduling single shutdown from: ", stopDateParsed);
         iStartTask = new ThermostatIgnitionShutdownTimerTask(aThermostat, CommandType.ON_CONDITIONAL);
         iStopTask = new ThermostatIgnitionShutdownTimerTask(aThermostat, CommandType.OFF_CONDITIONAL);
         iTimer.schedule(iStartTask, startDateParsed.getTime());
