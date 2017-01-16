@@ -130,10 +130,10 @@ public class MessageHandler {
         }
     }
 
-    public void testReadAllMessagesOneByOne() {
-        for (SMS tSMS : iSMSGateway.getAllMessages()) {
-            System.out.println(iSMSGateway.readMsgAtCertainPosition(tSMS.getPosition()));
-        }
-    }
+//    public void testReadAllMessagesOneByOne() {
+//        for (SMS tSMS : iSMSGateway.getAllMessages()) {
+//            System.out.println(iSMSGateway.readMsgAtCertainPosition(tSMS.getPosition()));
+//        }
+//    }
 
 }

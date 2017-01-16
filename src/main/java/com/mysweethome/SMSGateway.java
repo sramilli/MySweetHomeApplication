@@ -118,6 +118,36 @@ public class SMSGateway implements SerialDataListener{
          }
          addListener(this);
      }
+     
+     
+     
+     
+     /*
+      *
+       -------)) A6  event data /  Data received
+
+			[
+			+CIEV: "MESSAGE",1
+			
+			+CMT: ,21
+			07916407970900F1040B916407407435F1000071106191609440024F37
+			]
+			
+			
+			[
+			+CIEV: "MESSAGE",1
+			
+			+CMT: "+46700447531",,"2017/01/16,19:28:51+01"
+			On
+			]
+			
+		-------)) SIM900
+			
+			[
+			+CMTI: "SM",1
+			]
+      *	
+      */
 
 
     
@@ -154,7 +184,7 @@ public class SMSGateway implements SerialDataListener{
 //        		);
 //    }
     
-    public void deleteAllMessages(Collection<SMS> aMessages){
+    private void deleteAllMessages(Collection<SMS> aMessages){
         logger.info("Deleting all messages");
         for (SMS tSMS : aMessages) {
             logger.info("Delete message [{}] ", tSMS);
@@ -212,42 +242,42 @@ public class SMSGateway implements SerialDataListener{
      * Implementation
      */
     
-    public void setTextMode(){
+    private void setTextMode(){
         logger.debug("---->Sending AT Command: AT+CMGF=1");
         sendATCommand("AT+CMGF=1");
     }
     
-    public void sendAT(){
+    private void sendAT(){
         logger.debug("---->Sending AT Command: AT");
         sendATCommand("AT");
     }
     
-    public void requestAllMessages(){
+    private void requestAllMessages(){
     	logger.debug("---->Sending AT Command: AT+CMGL=\"ALL\"");
     	sendATCommand("AT+CMGL=\"ALL\"");
     	//Helper.waitABit(2000);
     }
     
-    public void sendNewSMS_number(String aNumberRecipient){
+    private void sendNewSMS_number(String aNumberRecipient){
     	logger.debug("---->Sending AT Command: AT+CMGS=\"{}\"", aNumberRecipient);
     	sendATCommand("AT+CMGS=\"" + aNumberRecipient + "\"");
     }
     
-    public void sendNewSMS_message(String aMessage){
+    private void sendNewSMS_message(String aMessage){
     	sendString(aMessage);
     }
     
-    public void sendNewSMS_terminate(){
+    private void sendNewSMS_terminate(){
     	sendChar(ctrlZ);
     }
     
-    public String deleteMsgAtCertainPosition(int aPos) {
+    private String deleteMsgAtCertainPosition(int aPos) {
         logger.debug("---->Sending AT Command: AT+CMGD=[{}]", aPos);
         sendATCommand("AT+CMGD=" + aPos);
         return readFromSerial();
     }
     
-    public String readMsgAtCertainPosition(int aPos) {
+    private String readMsgAtCertainPosition(int aPos) {
         logger.info("---->Sending AT Command: AT+CMGR=[{}]", aPos);
         sendATCommand("AT+CMGR=" + aPos);
         return readFromSerial();
@@ -274,7 +304,7 @@ public class SMSGateway implements SerialDataListener{
     	Helper.waitABit(2000);
     }
     
-    public String readFromSerial() {
+    private String readFromSerial() {
     	logger.debug("Reading answer from GSM module");
         Helper.waitABit(2000);
         StringBuffer tReply = new StringBuffer();
@@ -316,11 +346,11 @@ public class SMSGateway implements SerialDataListener{
      * public methods
      */
     
-    public void removeListener(SerialDataListener aListener){
+    private void removeListener(SerialDataListener aListener){
         serial.removeListener(aListener);
     }
     
-    public void addListener(SerialDataListener aListener){
+    private void addListener(SerialDataListener aListener){
         serial.addListener(aListener);
     }
 
