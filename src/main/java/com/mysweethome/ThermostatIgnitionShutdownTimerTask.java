@@ -24,7 +24,7 @@ public class ThermostatIgnitionShutdownTimerTask extends TimerTask{
 
     @Override
     public void run() {
-        iThermostat.executeCommand(iCommandType, null);
+        iThermostat.executeCommand(iCommandType, null, null);
     }
     
 }

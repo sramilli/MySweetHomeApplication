@@ -241,11 +241,11 @@ public class Thermostat implements GpioPinListenerDigital {
     
     public void processReceivedCommand(CommandType tCommand, User aUser, SMS aSMS){
                 if (CommandType.ON.equals(tCommand) || CommandType.OFF.equals(tCommand) || CommandType.MANUAL.equals(tCommand)){
-                    executeCommand(tCommand, null);
+                    executeCommand(tCommand, aUser, null);
                 } else if (CommandType.STATUS.equals(tCommand)){
-                    iMessageHandler.sendMessage(new Message(aUser, this.getStatus()));
+                    iMessageHandler.sendMessage(new Message(aUser, this.getStatus()), true);
                 } else if (CommandType.HELP.equals(tCommand)){
-                    iMessageHandler.sendMessage(new Message(aUser, HELP_TEXT_USAGE));
+                    iMessageHandler.sendMessage(new Message(aUser, HELP_TEXT_USAGE), true);
                 } else if (CommandType.REGISTER_NUMBER.equals(tCommand)){
                     String[] tSplittedStringt = aSMS.getText().split(" ");
                     if (tSplittedStringt.length >= 2){
@@ -255,30 +255,37 @@ public class Thermostat implements GpioPinListenerDigital {
                         logger.error("REGISTER_NUMBER command not formatted correctly");
                     }
                 } else if (CommandType.PROGRAM_DAILY.equals(tCommand)){
-                    executeCommand(tCommand, aSMS.getText());
+                    executeCommand(tCommand, null, aSMS.getText());
                 }  else if (CommandType.PROGRAM.equals(tCommand)){
-                    executeCommand(tCommand, aSMS.getText());
+                    executeCommand(tCommand, null, aSMS.getText());
                 }
     }
     
-    public void executeCommand(CommandType aCmd, String aText) {
+    public void executeCommand(CommandType aCmd, User aUser, String aText) {
         //used via SMS
         if (aCmd == null) 
             return;
         if (aCmd.equals(CommandType.ON)) {
             this.turnOn();
+            iMessageHandler.sendMessage(new Message(aUser, "Turned ON remotely"), MySweetHomeProperties.ACKNOWLEDGE_REMOTE_COMMAND);
         } else if (aCmd.equals(CommandType.ON_CONDITIONAL)) {
             this.turnOnConditionally();
+            iMessageHandler.sendMessage(new Message(aUser, "Turned ON by schedule"), MySweetHomeProperties.ACKNOWLEDGE_REMOTE_COMMAND);
         } else if (aCmd.equals(CommandType.MANUAL)) {
             this.setToManual();
+            iMessageHandler.sendMessage(new Message(aUser, "Turned to MANUAL remotely"), MySweetHomeProperties.ACKNOWLEDGE_REMOTE_COMMAND);
         } else if (aCmd.equals(CommandType.OFF)) {
             this.turnOff();
+            iMessageHandler.sendMessage(new Message(aUser, "Turned OFF remotely"), MySweetHomeProperties.ACKNOWLEDGE_REMOTE_COMMAND);
         } else if (aCmd.equals(CommandType.OFF_CONDITIONAL)) {
             this.turnOffConditionally();
+            iMessageHandler.sendMessage(new Message(aUser, "Turned OFF by schedule"), MySweetHomeProperties.ACKNOWLEDGE_REMOTE_COMMAND);
         }else if (aCmd.equals(CommandType.PROGRAM_DAILY)){
             programRepeatedIgnition(aText, this);
+            iMessageHandler.sendMessage(new Message(aUser, "Programmed daily: " + aText), MySweetHomeProperties.ACKNOWLEDGE_REMOTE_COMMAND);
         }else if (aCmd.equals(CommandType.PROGRAM)){
             programIgnition(aText, this);
+            iMessageHandler.sendMessage(new Message(aUser, "Programmed for single event: " + aText), MySweetHomeProperties.ACKNOWLEDGE_REMOTE_COMMAND);
         }else{
             logger.error("Thermostat: Command via SMS not supported");
         }

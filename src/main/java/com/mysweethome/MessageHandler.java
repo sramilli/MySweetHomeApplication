@@ -35,7 +35,8 @@ public class MessageHandler {
         //TODO as singleton
     }
     
-    public void sendMessage(Message aMessage){
+    public void sendMessage(Message aMessage, boolean aSend){
+    	if (!aSend) return;
         if (aMessage == null || (aMessage.getUser() == null)){
             logger.warn("sendMessage doing nothing. Message invalid:  [{}] ", aMessage);
             return;

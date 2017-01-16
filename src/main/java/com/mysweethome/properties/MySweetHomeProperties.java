@@ -59,6 +59,8 @@ public class MySweetHomeProperties {
     public static int MQTT_QOS_2 = 2;
     public static boolean USE_INTERNAL_GPIO_PULL_UPP = true;
     
+    public static boolean ACKNOWLEDGE_REMOTE_COMMAND = false;
+    
     static {
         try{
             PropertiesHandler prop = PropertiesHandler.getInstance();
@@ -93,6 +95,7 @@ public class MySweetHomeProperties {
             USER_3 = prop.getProperty("USER_3");
             BMP280_TEMP_SENSOR_PRESENT_AT_76 = new Boolean(prop.getProperty("BMP280_TEMP_SENSOR_PRESENT_AT_76"));
             USE_INTERNAL_GPIO_PULL_UPP = new Boolean(prop.getProperty("USE_INTERNAL_GPIO_PULL_UPP"));
+            ACKNOWLEDGE_REMOTE_COMMAND = new Boolean(prop.getProperty("ACKNOWLEDGE_REMOTE_COMMAND"));
             System.out.println("Read Prop measureTemps correctly");
         } catch (Throwable ex){
             System.out.println("ERROR READING PROP FILE!!!");
