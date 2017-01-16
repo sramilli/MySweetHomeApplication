@@ -14,7 +14,7 @@ class GSMDataInterpreter {
     public static GSMCommand getCommand(String aString){
         if (aString == null || "".equals(aString)) return GSMCommand.UNKNOW;
         aString = aString.trim();
-        if (aString.startsWith(GSMCommand.MESSAGE_ARRIVED.toString())) return GSMCommand.MESSAGE_ARRIVED;
+        if (aString.startsWith(GSMCommand.MESSAGE_ARRIVED_SIM900.toString()) || aString.startsWith(GSMCommand.MESSAGE_ARRIVED_A6.toString())) return GSMCommand.MESSAGE_ARRIVED;
         else if (aString.startsWith(GSMCommand.READ_ALL_MESSAGES.toString())) return GSMCommand.READ_ALL_MESSAGES;
         
         return GSMCommand.UNKNOW;

@@ -10,7 +10,9 @@ package com.mysweethome;
  * @author Ste
  */
 enum GSMCommand {
-    MESSAGE_ARRIVED("+CMTI:"),
+	MESSAGE_ARRIVED("+CMTI:"),
+    MESSAGE_ARRIVED_SIM900("+CMTI:"),
+    MESSAGE_ARRIVED_A6("+CMT:"),
     AT("AT"),
     READ_ALL_MESSAGES("AT+CMGL=\"ALL\""),
     READ_MESSAGE(""),

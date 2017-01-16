@@ -66,8 +66,9 @@ public class SMSGateway implements SerialDataListener{
         if (serial.isShutdown()) logger.debug("Serial Port Closed!");
         
         sendAT();
-        setTextMode();
         String response = readFromSerial(); 
+        setTextMode();
+        response = readFromSerial(); 
         if (response == null || response.equals("")) {
         	logger.error("GPRS ERROR. It didnt respond to AT command");
         	
@@ -112,6 +113,8 @@ public class SMSGateway implements SerialDataListener{
             iMessageHandler.processReceivedSMSS(tSMSs);
             
             deleteAllMessages(tSMSs);
+         } else {
+        	 logger.warn("Incoming event data discarded from SMSGateway:  ---->[{}]<----", response);
          }
          addListener(this);
      }
