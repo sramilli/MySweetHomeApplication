@@ -255,9 +255,9 @@ public class Thermostat implements GpioPinListenerDigital {
                         logger.error("REGISTER_NUMBER command not formatted correctly");
                     }
                 } else if (CommandType.PROGRAM_DAILY.equals(tCommand)){
-                    executeCommand(tCommand, null, aSMS.getText());
+                    executeCommand(tCommand, aUser, aSMS.getText());
                 }  else if (CommandType.PROGRAM.equals(tCommand)){
-                    executeCommand(tCommand, null, aSMS.getText());
+                    executeCommand(tCommand, aUser, aSMS.getText());
                 }
     }
     
