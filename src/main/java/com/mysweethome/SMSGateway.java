@@ -178,9 +178,9 @@ public class SMSGateway implements SerialDataListener{
     	
     	//Helper.waitABit(1000);
     	//setTextMode();
-    	String msgs = readFromSerial();  //empty the buffer
-    	sendReadAllMessages();
-        msgs = readFromSerial();
+    	//String msgs = readFromSerial();  //empty the buffer
+    	requestAllMessages();
+    	String msgs = readFromSerial();
         logger.debug("Raw data from GSM module: [\n{}\n]", msgs);
         
         return msgs;
@@ -222,7 +222,7 @@ public class SMSGateway implements SerialDataListener{
         sendATCommand("AT");
     }
     
-    public void sendReadAllMessages(){
+    public void requestAllMessages(){
     	logger.debug("---->Sending AT Command: AT+CMGL=\"ALL\"");
     	sendATCommand("AT+CMGL=\"ALL\"");
     	//Helper.waitABit(2000);
