@@ -62,8 +62,8 @@ public class Thermostat implements GpioPinListenerDigital {
     
     ThermostatIgnitionShutdownTimerTask iStartTaskRepeated;
     ThermostatIgnitionShutdownTimerTask iStopTaskRepeated;
-    ThermostatIgnitionShutdownTimerTask iStartTask;
-    ThermostatIgnitionShutdownTimerTask iStopTask;
+    ThermostatIgnitionShutdownTimerTask iStartSingleTask;
+    ThermostatIgnitionShutdownTimerTask iStopSingleTask;
     
     public static long REPEAT_DAILY = 24 * 60 * 60 * 1000;
     public static boolean ON = true;
@@ -175,12 +175,12 @@ public class Thermostat implements GpioPinListenerDigital {
     }
     
     public String getProgramTimes(){
-        if (iStartTask == null) return "not active";
+        if (iStartSingleTask == null) return "not active";
         DateFormat sdf = new SimpleDateFormat("HH:mm");
         Calendar tLastStart = Calendar.getInstance();
-        tLastStart.setTimeInMillis(iStartTask.scheduledExecutionTime());
+        tLastStart.setTimeInMillis(iStartSingleTask.scheduledExecutionTime());
         Calendar tLastStop = Calendar.getInstance();
-        tLastStop.setTimeInMillis(iStopTask.scheduledExecutionTime());
+        tLastStop.setTimeInMillis(iStopSingleTask.scheduledExecutionTime());
         return sdf.format(tLastStart.getTime()) + "-" + sdf.format(tLastStop.getTime());
     }
     
@@ -330,12 +330,12 @@ public class Thermostat implements GpioPinListenerDigital {
     }
     
     private void programIgnition(String aText, Thermostat aThermostat){
-        if (iStartTask != null && iStopTask != null){
+        if (iStartSingleTask != null && iStopSingleTask != null){
             try {
-                iStartTask.cancel();
-                iStopTask.cancel();
-                iStartTask = null;
-                iStopTask = null;
+                iStartSingleTask.cancel();
+                iStopSingleTask.cancel();
+                iStartSingleTask = null;
+                iStopSingleTask = null;
             } catch (Throwable e) {
                 logger.error("Exception cancelling Daily program. Doing nothing.");
             }
@@ -353,10 +353,10 @@ public class Thermostat implements GpioPinListenerDigital {
         //TODO
         Helper.printCal("Scheduling single ignition from: ", startDateParsed);
         Helper.printCal("Scheduling single shutdown from: ", stopDateParsed);
-        iStartTask = new ThermostatIgnitionShutdownTimerTask(aThermostat, CommandType.ON_CONDITIONAL);
-        iStopTask = new ThermostatIgnitionShutdownTimerTask(aThermostat, CommandType.OFF_CONDITIONAL);
-        iTimer.schedule(iStartTask, startDateParsed.getTime());
-        iTimer.schedule(iStopTask, stopDateParsed.getTime());
+        iStartSingleTask = new ThermostatIgnitionShutdownTimerTask(aThermostat, CommandType.ON_CONDITIONAL);
+        iStopSingleTask = new ThermostatIgnitionShutdownTimerTask(aThermostat, CommandType.OFF_CONDITIONAL);
+        iTimer.schedule(iStartSingleTask, startDateParsed.getTime());
+        iTimer.schedule(iStopSingleTask, stopDateParsed.getTime());
 
         iBlueLED.turnOn();
 
